@@ -1,7 +1,7 @@
 TK-API-NG
 =========
 
-wrapper around the betfair api. You need to create & upload
+Simple wrapper around the betfair api. You'll need to create & upload
 
 1.) appid 
 2.) certificate 
@@ -18,8 +18,6 @@ Once you have an appid & certificate, all you need to do is change these values 
 	private String bfpw = "xxxxxxx"; //my betfair password
 	private String ctpw = "xxxxxxx"; //my pkcs12 password
 
-...and corrected the java package declarations listed at the top of both java files! Then it should just execute if you have the included jar file on the classpath.  
+...and corrected the java package declarations listed at the top of both java files, then "BetfairFace.java" should just execute if you have the included jar file "aping-0.1-SNAPSHOT.jar" (see https://github.com/betfair/API-NG-sample-code/tree/master/java/ng) on the classpath.
 
 Method *NOT USED* example: bf.createTheFile("HosreOdds.txt", mine);
-
-
