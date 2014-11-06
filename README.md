@@ -18,6 +18,8 @@ Once you have an appid & certificate, all you need to do is change these values 
 	private String bfpw = "xxxxxxx"; //my betfair password
 	private String ctpw = "xxxxxxx"; //my pkcs12 password
 
-...and corrected the java package declarations listed at the top of both java files! Then it should just execute if you have the included jar file on the classpath.
+...and corrected the java package declarations listed at the top of both java files! Then it should just execute if you have the included jar file on the classpath.  
+
+Method *NOT USED* example: bf.createTheFile("HosreOdds.txt", mine);
 
 
