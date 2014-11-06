@@ -22,4 +22,4 @@ Once you have an appid & certificate, all you need to do is change these values 
 
 Method *NOT USED* example: bf.createTheFile("HosreOdds.txt", mine);
 
-For my info - http://www.pluckier.co.uk:8080/@md=d&cd=//&c=6Yw@/MyEclipse?ac=15
+For my info - http://www.pluckier.co.uk:8080/@md=d&cd=//&c=6Yw@/33?ac=10
