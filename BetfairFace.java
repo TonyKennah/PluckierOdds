@@ -297,7 +297,7 @@ public class BetfairFace {
 			int length = baos.toByteArray().length;
 			System.out.println("Length of file is: " + length + " bytes");
 
-			if (length > 500 && bd instanceof HashMap) {
+			if (length > 100 && bd instanceof HashMap) {
 				for (Long keys : bd.keySet()) {
 					Double odd = 0.0;
 					if (mine.get(keys).getOdds() != null) {
@@ -309,7 +309,7 @@ public class BetfairFace {
 				// System.out.println("-----CREATED----");
 
 			} else {
-				System.out.println("The odds are foooked");
+				System.out.println("The odds file is very short!");
 			}
 		} catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
