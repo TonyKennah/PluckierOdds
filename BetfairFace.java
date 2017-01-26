@@ -290,7 +290,6 @@ public class BetfairFace {
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
 			BufferedWriter bw = new BufferedWriter(fw);
 
-			// test
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(baos);
 			oos.writeObject(bd);
@@ -305,12 +304,10 @@ public class BetfairFace {
 					}
 					bw.write(mine.get(keys).getName() + "#" + odd + "\n");
 				}
-				bw.close();
-				// System.out.println("-----CREATED----");
-
 			} else {
 				System.out.println("The odds file is very short!");
 			}
+			bw.close();
 		} catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
 			System.out.println("Exception " + fnfe);
