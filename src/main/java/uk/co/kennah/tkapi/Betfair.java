@@ -1,24 +1,28 @@
 package uk.co.kennah.tkapi;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class Betfair {
 
-	public void odds(String date) {
+	public void getOdds(String date, String outputDir) {
 		try {
 			BetfairFace bf = new BetfairFace();
 			bf.betfairLogin();
 
 			// Check for successful login before proceeding
 			if ("SUCCESS".equals(bf.getStatus())) {
-				// Fetch market data only ONCE to avoid redundant API calls
 				HashMap<Long, MyRunner> marketData = bf.start(date, bf.getAppid(), bf.getSession());
 
-				// Create the two required files from the same data
-				String fileCalledLatest = "C:\\prj\\TK-API-NG\\" + date + "-ODDSlatest.data";
+				// Use Paths.get for cross-platform compatibility and clarity
+				String fileCalledLatest = Paths.get(outputDir, date + "-ODDSlatest.data").toString();
 				bf.createTheFile(fileCalledLatest, marketData);
 
-				String fileCalled = "C:\\prj\\TK-API-NG\\" + date + "ODDS.data";
+				// Fix inconsistent filename and use Paths.get
+				String fileCalled = Paths.get(outputDir, date + "-ODDS.data").toString();
 				bf.createTheFile(fileCalled, marketData);
 
 				bf.betfairLogout();
@@ -33,7 +37,27 @@ public class Betfair {
 	}
 
 	public static void main(String[] args) {
-		new Betfair().odds("2025-08-05");
+		// Default to today's date if no argument is provided
+		String date;
+		if (args.length > 0) {
+			date = args[0];
+		} else {
+			date = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+			System.out.println("No date provided, using today's date: " + date);
+		}
+
+		// Default to a 'data' subdirectory in the project's root
+		String outputDir;
+		if (args.length > 1) {
+			outputDir = args[1];
+		} else {
+			outputDir = "data";
+		}
+
+		new File(outputDir).mkdirs(); // Ensure the output directory exists
+		System.out.println("Writing output files to: " + new File(outputDir).getAbsolutePath());
+
+		new Betfair().getOdds(date, outputDir);
 	}
 
 }

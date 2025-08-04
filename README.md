@@ -44,18 +44,19 @@ The final JAR will be located in the `target/` directory.
 
 To run the application, execute the JAR from the project root.
 
+
 ```bash
 java --add-opens java.base/java.lang=com.google.gson -jar target/tk-api-ng-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 
 **Note on `--add-opens`:** This flag is required when running on Java 9 or newer. It allows the Gson library (a dependency) to function correctly with Java's module system.
 
-## Conclusion of the Application
+## Application Output
 
 If all is good you will see the length of the files in standard out
 
-   Length of file is: 37202 bytes
-   Length of file is: 37202 bytes
+   - Length of file is: 37202 bytes
+   - Length of file is: 37202 bytes
 
 and two file will be created in the project root folder:
 
