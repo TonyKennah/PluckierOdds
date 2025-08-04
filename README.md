@@ -1,25 +1,45 @@
-TK-API-NG
-=========
+# TK-API-NG
 
-Simple wrapper around the betfair api. You'll need to create & upload
+A simple Java application to interact with the Betfair API-NG.
 
-1.) appid 
-2.) certificate 
+## Prerequisites
 
-Detailed here:
-  https://api.developer.betfair.com/services/webapps/docs/display/1smk3cen4v3lu3yomq5qye0ni/Non-Interactive+%28bot%29+login
+1.  A Java Development Kit (JDK), version 8 or newer.
+2.  Your Betfair Application Key and a `client-2048.p12` certificate file. See the Betfair documentation for details.
+3.  The required dependency JAR files in the project's root directory.
 
-I uploaded a "pem" certificate file to betfair but actually use a pkcs12 certificate file in the code (also shown via that link above).
+## Configuration
 
-Once you have an appid & certificate, all you need to do is change these values in "BetfairFace.java":
+1.  Place your `client-2048.p12` certificate file in the root directory of the project.
+2.  Create a file named `config.properties` in the project's root directory.
+3.  Add your personal credentials to `config.properties` with the following keys:
 
-	private String appid = "xxxxxxx"; //my appid
-	private String bfun = "xxxxxxx"; //my betfair username
-	private String bfpw = "xxxxxxx"; //my betfair password
-	private String ctpw = "xxxxxxx"; //my pkcs12 password
+    ```properties
+    betfair.appid=YOUR_APP_ID
+    betfair.username=YOUR_BETFAIR_USERNAME
+    betfair.password=YOUR_BETFAIR_PASSWORD
+    betfair.cert.password=YOUR_CERTIFICATE_PASSWORD
+    ```
 
-...and corrected the java package declarations listed at the top of both java files, then "BetfairFace.java" should build & execute, if you have the included jar file "aping-0.1-SNAPSHOT.jar" (see https://github.com/betfair/API-NG-sample-code/tree/master/java/ng) and your pkcs12 certificate file on the classpath.
+    **Note:** This file contains sensitive information and should not be committed to public source control. If using Git, add `config.properties` to your `.gitignore` file.
 
-Method *NOT USED* example: bf.createTheFile("HosreOdds.txt", mine);
 
-For my info - http://www.pluckier.co.uk:8080/@md=d&cd=//&c=6Yw@/33?ac=10
+
+## Building and Running
+
+1.  **Compile the code:**
+    Open a command prompt in the project root and run the following command. This creates a `bin` directory for the compiled `.class` files.
+    ```bash
+    javac -d bin -cp ".;betfair-aping-1.0.jar;client-combined-3.1.0-nodeps.jar;commons-exec-1.3.jar;commons-logging-1.2.jar;gson-2.3.1.jar;guava-21.0.jar;httpclient-4.5.2.jar;httpcore-4.4.4.jar;httpmime-4.5.2.jar;jna-4.1.0.jar;jna-platform-4.1.0.jar;jsoup-1.10.3.jar" Betfair.java BetfairFace.java
+    ```
+
+2.  **Run the application:**
+    ```bash
+    java -cp ".;bin;betfair-aping-1.0.jar;client-combined-3.1.0-nodeps.jar;commons-exec-1.3.jar;commons-logging-1.2.jar;gson-2.3.1.jar;guava-21.0.jar;httpclient-4.5.2.jar;httpcore-4.4.4.jar;httpmime-4.5.2.jar;jna-4.1.0.jar;jna-platform-4.1.0.jar;jsoup-1.10.3.jar" Betfair
+    ```
+
+3.  **Running on Java 9+:**
+    If you are using Java 9 or newer, you may need to add the `--add-opens` flag to the `java` command to avoid reflection errors with older libraries:
+    ```bash
+    java --add-opens java.base/java.lang=ALL-UNNAMED -cp ".;bin;betfair-aping-1.0.jar;client-combined-3.1.0-nodeps.jar;commons-exec-1.3.jar;commons-logging-1.2.jar;gson-2.3.1.jar;guava-21.0.jar;httpclient-4.5.2.jar;httpcore-4.4.4.jar;httpmime-4.5.2.jar;jna-4.1.0.jar;jna-platform-4.1.0.jar;jsoup-1.10.3.jar" Betfair
+    ```
