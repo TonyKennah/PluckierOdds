@@ -49,3 +49,24 @@ java --add-opens java.base/java.lang=com.google.gson -jar target/tk-api-ng-1.0-S
 ```
 
 **Note on `--add-opens`:** This flag is required when running on Java 9 or newer. It allows the Gson library (a dependency) to function correctly with Java's module system.
+
+## Conclusion of the Application
+
+If all is good you will see the length of the files in standard out
+
+   Length of file is: 37202 bytes
+   Length of file is: 37202 bytes
+
+and two file will be created in the project root folder:
+
+   yyyy.mm.dd.ODDS.data
+   yyyy-mm-dd.ODDSlatest.data
+
+   These files will conatin a list of hoorse names with current odds (seperated by a #):
+
+        Emilys Choice#11.5
+        Montauk Memoirs#2.08
+        Starzo Fal#1.28
+        Purple Mood#1.28
+        Grace Faraday#7.0
+        Hooray Austin#1.15
