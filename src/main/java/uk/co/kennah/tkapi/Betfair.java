@@ -1,14 +1,10 @@
 package uk.co.kennah.tkapi;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 public class Betfair {
 
-	public void getOdds(String date, String outputDir) {
+	public void odds(String date) {
 		try {
 			BetfairFace bf = new BetfairFace();
 			bf.betfairLogin();
@@ -19,10 +15,10 @@ public class Betfair {
 				HashMap<Long, MyRunner> marketData = bf.start(date, bf.getAppid(), bf.getSession());
 
 				// Create the two required files from the same data
-				String fileCalledLatest = Paths.get(outputDir, date + "-ODDSlatest.data").toString();
+				String fileCalledLatest = "C:\\prj\\TK-API-NG\\" + date + "-ODDSlatest.data";
 				bf.createTheFile(fileCalledLatest, marketData);
 
-				String fileCalled = Paths.get(outputDir, date + "ODDS.data").toString();
+				String fileCalled = "C:\\prj\\TK-API-NG\\" + date + "ODDS.data";
 				bf.createTheFile(fileCalled, marketData);
 
 				bf.betfairLogout();
@@ -37,27 +33,7 @@ public class Betfair {
 	}
 
 	public static void main(String[] args) {
-		// Default to today's date if no argument is provided
-		String date;
-		if (args.length > 0) {
-			date = args[0];
-		} else {
-			date = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
-			System.out.println("No date provided, using today's date: " + date);
-		}
-
-		// Default to a 'data' subdirectory in the user's home directory
-		String outputDir;
-		if (args.length > 1) {
-			outputDir = args[1];
-		} else {
-			outputDir = Paths.get(System.getProperty("user.home"), "tk-api-ng-data").toString();
-		}
-
-		new File(outputDir).mkdirs(); // Ensure the output directory exists
-		System.out.println("Writing output files to: " + outputDir);
-
-		new Betfair().getOdds(date, outputDir);
+		new Betfair().odds("2025-08-05");
 	}
 
 }

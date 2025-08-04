@@ -1,45 +1,51 @@
 # TK-API-NG
 
-A simple Java application to interact with the Betfair API-NG.
+A Java application for fetching odds data from the Betfair API.
 
 ## Prerequisites
 
-1.  A Java Development Kit (JDK), version 8 or newer.
-2.  Your Betfair Application Key and a `client-2048.p12` certificate file. See the Betfair documentation for details.
-3.  The required dependency JAR files in the project's root directory.
+*   Java Development Kit (JDK) 8 or higher.
+*   Apache Maven.
 
-## Configuration
+## Setup
 
-1.  Place your `client-2048.p12` certificate file in the root directory of the project.
-2.  Create a file named `config.properties` in the project's root directory.
-3.  Add your personal credentials to `config.properties` with the following keys:
+This project depends on a proprietary Betfair SDK which is not available in public Maven repositories. You must install it into your local Maven repository before you can build the project.
 
-    ```properties
-    betfair.appid=YOUR_APP_ID
-    betfair.username=YOUR_BETFAIR_USERNAME
-    betfair.password=YOUR_BETFAIR_PASSWORD
-    betfair.cert.password=YOUR_CERTIFICATE_PASSWORD
-    ```
+### 1. Install the Local Dependency
 
-    **Note:** This file contains sensitive information and should not be committed to public source control. If using Git, add `config.properties` to your `.gitignore` file.
+The required JAR file, `betfair-aping-nodep.jar`, is included in the `/lib` directory of this project.
 
+From the root directory of the project, run the following command to install the JAR into your local Maven repository:
+```bash
+mvn install:install-file -Dfile=lib/betfair-aping-nodep.jar -DgroupId=com.betfair.aping -DartifactId=betfair-aping-sdk -Dversion=1.0 -Dpackaging=jar
+```
 
+### 2. Configure Credentials
 
-## Building and Running
+The application requires your Betfair credentials to be configured.
 
-1.  **Compile the code:**
-    Open a command prompt in the project root and run the following command. This creates a `bin` directory for the compiled `.class` files.
-    ```bash
-    javac -d bin -cp ".;betfair-aping-1.0.jar;client-combined-3.1.0-nodeps.jar;commons-exec-1.3.jar;commons-logging-1.2.jar;gson-2.3.1.jar;guava-21.0.jar;httpclient-4.5.2.jar;httpcore-4.4.4.jar;httpmime-4.5.2.jar;jna-4.1.0.jar;jna-platform-4.1.0.jar;jsoup-1.10.3.jar" Betfair.java BetfairFace.java
-    ```
+1.  Navigate to `src/main/resources/`.
+2.  Make a copy of `config.properties.template` and rename it to `config.properties`.
+3.  Fill in your details in the new `config.properties` file.
 
-2.  **Run the application:**
-    ```bash
-    java -cp ".;bin;betfair-aping-1.0.jar;client-combined-3.1.0-nodeps.jar;commons-exec-1.3.jar;commons-logging-1.2.jar;gson-2.3.1.jar;guava-21.0.jar;httpclient-4.5.2.jar;httpcore-4.4.4.jar;httpmime-4.5.2.jar;jna-4.1.0.jar;jna-platform-4.1.0.jar;jsoup-1.10.3.jar" Betfair
-    ```
+*Note: `config.properties` is included in `.gitignore` to prevent you from accidentally committing your credentials.*
 
-3.  **Running on Java 9+:**
-    If you are using Java 9 or newer, you may need to add the `--add-opens` flag to the `java` command to avoid reflection errors with older libraries:
-    ```bash
-    java --add-opens java.base/java.lang=ALL-UNNAMED -cp ".;bin;betfair-aping-1.0.jar;client-combined-3.1.0-nodeps.jar;commons-exec-1.3.jar;commons-logging-1.2.jar;gson-2.3.1.jar;guava-21.0.jar;httpclient-4.5.2.jar;httpcore-4.4.4.jar;httpmime-4.5.2.jar;jna-4.1.0.jar;jna-platform-4.1.0.jar;jsoup-1.10.3.jar" Betfair
-    ```
+## Building the Project
+
+Once the setup is complete, you can build the application using Maven. This will compile the code, run tests, and package everything into a single executable JAR file.
+
+```bash
+mvn clean package
+```
+
+The final JAR will be located in the `target/` directory.
+
+## Running the Application
+
+To run the application, execute the JAR from the project root.
+
+```bash
+java --add-opens java.base/java.lang=com.google.gson -jar target/tk-api-ng-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+**Note on `--add-opens`:** This flag is required when running on Java 9 or newer. It allows the Gson library (a dependency) to function correctly with Java's module system.

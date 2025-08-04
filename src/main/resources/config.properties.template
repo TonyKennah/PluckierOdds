@@ -1,0 +1,9 @@
+# Betfair Application Key
+betfair.appid=
+
+# Betfair Account Credentials
+betfair.username=
+betfair.password=
+
+# Password for the client-2048.p12 certificate file
+betfair.cert.password=

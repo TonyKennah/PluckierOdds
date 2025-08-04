@@ -1,5 +1,4 @@
 # Original ignores from your project
-*.jar
 *.data
 *.p12
 config.properties
