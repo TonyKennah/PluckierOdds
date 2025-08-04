@@ -1,3 +1,4 @@
+package uk.co.kennah.tkapi;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -37,6 +38,7 @@ import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 
+import java.io.InputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -79,8 +81,11 @@ public class BetfairFace
 
 	public BetfairFace() {
 		Properties props = new Properties();
-		// Use try-with-resources for automatic closing of the reader
-		try (FileInputStream in = new FileInputStream("config.properties")) {
+		// Load properties from the classpath (src/main/resources)
+		try (InputStream in = BetfairFace.class.getClassLoader().getResourceAsStream("config.properties")) {
+			if (in == null) {
+				throw new RuntimeException("Could not find config.properties on the classpath. Make sure it's in src/main/resources.");
+			}
 			props.load(in);
 			this.appid = props.getProperty("betfair.appid");
 			this.bfun = props.getProperty("betfair.username");
@@ -103,7 +108,13 @@ public class BetfairFace
 		try {
 			SSLContext ctx = SSLContext.getInstance("TLS");
 			KeyStore keyStore = KeyStore.getInstance("pkcs12");
-			keyStore.load(new FileInputStream(new File("client-2048.p12")), ctpw.toCharArray());
+			// Load keystore from the classpath (src/main/resources)
+			try (InputStream keyStoreStream = BetfairFace.class.getClassLoader().getResourceAsStream("client-2048.p12")) {
+				if (keyStoreStream == null) {
+					throw new RuntimeException("Could not find client-2048.p12 on the classpath. Make sure it's in src/main/resources.");
+				}
+				keyStore.load(keyStoreStream, ctpw.toCharArray());
+			}
 
 			KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 			kmf.init(keyStore, ctpw.toCharArray());
@@ -416,30 +427,4 @@ public class BetfairFace
 		return file;
 	}
 
-}
-
-class MyRunner implements Serializable {
-	private static final long serialVersionUID = 1L;
-	public String name;
-	public Double odds;
-
-	public MyRunner(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Double getOdds() {
-		return odds;
-	}
-
-	public void setOdds(Double odds) {
-		this.odds = odds;
-	}
 }

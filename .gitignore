@@ -1,5 +1,27 @@
-\bin
+# Original ignores from your project
 *.jar
 *.data
 *.p12
 config.properties
+
+# Maven build output
+/target/
+
+# Maven temporary files
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+
+# IDE settings
+.idea/
+*.iml
+*.project
+*.classpath
+.settings/
+
+# Log files
+*.log
