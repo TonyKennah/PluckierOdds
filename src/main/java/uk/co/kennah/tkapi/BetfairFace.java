@@ -1,24 +1,8 @@
 package uk.co.kennah.tkapi;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.StrictHostnameVerifier;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import uk.co.kennah.tkapi.client.BetfairAuthenticator;
 import uk.co.kennah.tkapi.config.AppConfig;
 import uk.co.kennah.tkapi.config.ConfigLoader;
-
 import com.betfair.aping.api.ApiNgJsonRpcOperations;
 import com.betfair.aping.api.ApiNgOperations;
 import com.betfair.aping.entities.EventTypeResult;
@@ -33,12 +17,6 @@ import com.betfair.aping.enums.MarketProjection;
 import com.betfair.aping.enums.MarketSort;
 import com.betfair.aping.enums.PriceData;
 import com.betfair.aping.exceptions.APINGException;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-
-import java.io.InputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -46,8 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.security.KeyStore;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -56,16 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import java.util.Properties;
-
-public class BetfairFace
-{
-	private String appid;
-	private String bfun;
-	private String bfpw;
-	private String ctpw;
-	private String session = "";
-	private String status = "";
+public class BetfairFace{
 	private ApiNgOperations jsonOperations = ApiNgJsonRpcOperations.getInstance();
 	private String applicationKey;
 	private String sessionToken;
@@ -82,8 +49,7 @@ public class BetfairFace
 		return authenticator;
 	}
 
-	public HashMap<Long, MyRunner> start(String date, String appKey, String ssoid)
-	{
+	public HashMap<Long, MyRunner> start(String date, String appKey, String ssoid){
 		this.applicationKey = appKey;
 		this.sessionToken = ssoid;
 		try
@@ -93,10 +59,8 @@ public class BetfairFace
 			Set<String> eventTypeIds = new HashSet<String>();
 			List<EventTypeResult> r = jsonOperations.listEventTypes(marketFilter, applicationKey, sessionToken);
 
-			for (EventTypeResult eventTypeResult : r)
-			{
-				if (eventTypeResult.getEventType().getName().equals("Horse Racing"))
-				{
+			for (EventTypeResult eventTypeResult : r){
+				if (eventTypeResult.getEventType().getName().equals("Horse Racing")){
 					eventTypeIds.add(eventTypeResult.getEventType().getId().toString());
 				}
 			}
@@ -104,8 +68,7 @@ public class BetfairFace
 			Date now = cal.getTime();
 			cal.set(Calendar.HOUR_OF_DAY, 23);
 			Date end = cal.getTime();
-			if (!date.equals(""))
-			{
+			if (!date.equals("")){
 				String[] params = date.split("-");
 				cal.set(Calendar.YEAR, Integer.parseInt(params[0]));
 				cal.set(Calendar.MONTH, Integer.parseInt(params[1]) - 1);
@@ -140,8 +103,7 @@ public class BetfairFace
 			marketProjection.add(MarketProjection.RUNNER_DESCRIPTION);
 			String maxResults = "1000";
 			List<MarketCatalogue> marketCatalogueResult = jsonOperations.listMarketCatalogue(marketFilter, marketProjection, MarketSort.FIRST_TO_START, maxResults, applicationKey, sessionToken);
-			for (MarketCatalogue mc : marketCatalogueResult)
-			{
+			for (MarketCatalogue mc : marketCatalogueResult){
 				printMarketCatalogue(mc);
 			}
 
@@ -168,34 +130,27 @@ public class BetfairFace
 				priceData.add(PriceData.EX_BEST_OFFERS);
 				priceProjection.setPriceData(priceData);
 				List<MarketBook> marketBookReturn = jsonOperations.listMarketBook(marketIds, priceProjection, null, null, null, applicationKey, sessionToken);
-				for (MarketBook mb : marketBookReturn)
-				{
+				for (MarketBook mb : marketBookReturn){
 					printBookCatalogue(mb);
 				}
 			}
 		}
-		catch (APINGException apiExc)
-		{
+		catch (APINGException apiExc){
 			System.out.println("\n\n\n\n\nAPINGException!!!!!!!!!!!\n\n\n\n\n HERE WHATS CAUGHT: " + apiExc.toString());
 		}
 		return mine;
 	}
 	
-	private void printMarketCatalogue(MarketCatalogue mk)
-	{
+	private void printMarketCatalogue(MarketCatalogue mk){
 		List<RunnerCatalog> runners = mk.getRunners();
-		if (runners != null)
-		{
-			for (RunnerCatalog rCat : runners)
-			{
+		if (runners != null){
+			for (RunnerCatalog rCat : runners){
 				//System.out.println(rCat.getRunnerName());
 				String name = rCat.getRunnerName();
-				if (Character.isDigit(rCat.getRunnerName().charAt(1)))
-				{
+				if (Character.isDigit(rCat.getRunnerName().charAt(1))){
 					name = rCat.getRunnerName().substring(4, rCat.getRunnerName().length());
 				}
-				else if (Character.isDigit(rCat.getRunnerName().charAt(0)))
-				{
+				else if (Character.isDigit(rCat.getRunnerName().charAt(0))){
 					name = rCat.getRunnerName().substring(3, rCat.getRunnerName().length());
 				}
 				mine.put(rCat.getSelectionId(), new MyRunner(name));
@@ -203,28 +158,21 @@ public class BetfairFace
 		}
 	}
 
-	private void printBookCatalogue(MarketBook mb)
-	{
+	private void printBookCatalogue(MarketBook mb){
 		List<Runner> runners = mb.getRunners();
-		if (runners != null)
-		{
-			for (Runner rCat : runners)
-			{
-				if (rCat.getEx().getAvailableToBack().size() > 0)
-				{
+		if (runners != null){
+			for (Runner rCat : runners){
+				if (rCat.getEx().getAvailableToBack().size() > 0){
 					mine.get(rCat.getSelectionId()).setOdds(rCat.getEx().getAvailableToBack().get(0).getPrice());
 				}
 			}
 		}
 	}	
 
-	public File createTheFile(String nameOfFile, HashMap<Long, MyRunner> bd)
-	{
+	public File createTheFile(String nameOfFile, HashMap<Long, MyRunner> bd){
 		File file = new File(nameOfFile);
-		try
-		{
-			if (!file.exists())
-			{
+		try{
+			if (!file.exists()){
 				file.createNewFile();
 			}
 			FileWriter fw = new FileWriter(file.getAbsoluteFile());
@@ -237,38 +185,30 @@ public class BetfairFace
 			int length = baos.toByteArray().length;
 			System.out.println("Length of file is: " + length + " bytes");
 
-			if (length > 500 && bd instanceof HashMap)
-			{
-				for (Long keys : bd.keySet())
-				{
+			if (length > 500 && bd instanceof HashMap){
+				for (Long keys : bd.keySet()){
 					Double odd = 0.0;
-					if (mine.get(keys).getOdds() != null)
-					{
+					if (mine.get(keys).getOdds() != null){
 						odd = mine.get(keys).getOdds();
 					}
 					bw.write(mine.get(keys).getName() + "#" + odd + "\n");
 				}
 				bw.close();
 				// System.out.println("-----CREATED----");
-
 			}
-			else
-			{
+			else{
 				System.out.println("The odds are foooked");
 			}
 			fw.close();
 		}
-		catch (FileNotFoundException fnfe)
-		{
+		catch (FileNotFoundException fnfe){
 			fnfe.printStackTrace();
 			System.out.println("Exception " + fnfe);
 		}
-		catch (IOException ioe)
-		{
+		catch (IOException ioe){
 			ioe.printStackTrace();
 			System.out.println("Exception " + ioe);
 		}
 		return file;
 	}
-
 }
