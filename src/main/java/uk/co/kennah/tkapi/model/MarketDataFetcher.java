@@ -42,7 +42,7 @@ public class MarketDataFetcher {
 		return authenticator;
 	}
 
-	public HashMap<Long, MyRunner> start(String date, String appKey, String ssoid){
+	public HashMap<Long, MyRunner> getData(String date, String appKey, String ssoid){
 		this.applicationKey = appKey;
 		this.sessionToken = ssoid;
 		try
