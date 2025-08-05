@@ -24,7 +24,7 @@ public class Betfair {
 				HashMap<Long, MyRunner> marketData = fetcher.start(date, auth.getAppid(), auth.getSession());
 
 				// Use the new OddsWriter to handle file creation
-				new OddsWriter().write(date + "ODDS.data", marketData);
+				new OddsWriter().write(date + "-ODDS.data", marketData);
 				auth.logout();
 			} else {
 				System.err.println("Login failed with status: " + auth.getStatus() + ". Aborting operation.");
