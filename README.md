@@ -22,13 +22,18 @@ mvn install:install-file -Dfile=lib/betfair-aping-nodep.jar -DgroupId=com.betfai
 
 ### 2. Configure Credentials
 
-The application requires your Betfair credentials to be configured.
+The application requires your Betfair credentials and a client security certificate to be configured.
+
++Credentials File:
 
 1.  Navigate to `src/main/resources/`.
 2.  Make a copy of `config.properties.template` and rename it to `config.properties`.
 3.  Fill in your details in the new `config.properties` file.
 
-*Note: `config.properties` is included in `.gitignore` to prevent you from accidentally committing your credentials.*
+
++Security Certificate: +1. Obtain the `client-2048.p12` security certificate file from Betfair. +2. Place this file in the `src/main/resources/` directory.
+
+*Note: Both `config.properties` and `client-2048.p12` are included in `.gitignore` to prevent you from accidentally committing your secrets.*
 
 ## Building the Project
 

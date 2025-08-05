@@ -2,6 +2,10 @@
 *.data
 *.p12
 config.properties
+# User-specific properties file containing credentials
+/src/main/resources/config.properties
+# Private key file for authentication
+/src/main/resources/client-2048.p12
 
 # Maven build output
 /target/
