@@ -59,13 +59,14 @@ TK-API-NG/
 │   │   │       ├── client/
 │   │   │       │   └── Session.java        # Handles login/logout and session management
 │   │   │       ├── config/
-│   │   │       │   ├── AppConfig.java      # Holds configuration data
 │   │   │       │   └── ConfigLoader.java   # Loads config.properties
 │   │   │       ├── io/
-│   │   │       │   └── OddsWriter.java     # Writes odds data to a file
+│   │   │       │   └── Writer.java         # Writes odds data to a file
 │   │   │       └── model/
-│   │   │           ├── DataFetcher.java    # Fetches market data from API
+│   │   │       │   ├── AppConfig.java      # Holds configuration data
 │   │   │           └── MyRunner.java       # Represents a single runner (horse)
+│   │   │       └── process/
+│   │   │           └── DataFetcher.java    # Fetches market data from API
 │   │   └── resources/
 │   │       ├── client-2048.p12         # SSL certificate for authentication
 │   │       └── config.properties.template # Template for user credentials
