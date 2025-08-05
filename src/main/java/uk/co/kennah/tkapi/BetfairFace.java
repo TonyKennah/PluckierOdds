@@ -15,6 +15,10 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import uk.co.kennah.tkapi.client.BetfairAuthenticator;
+import uk.co.kennah.tkapi.config.AppConfig;
+import uk.co.kennah.tkapi.config.ConfigLoader;
+
 import com.betfair.aping.api.ApiNgJsonRpcOperations;
 import com.betfair.aping.api.ApiNgOperations;
 import com.betfair.aping.entities.EventTypeResult;
@@ -66,81 +70,16 @@ public class BetfairFace
 	private String applicationKey;
 	private String sessionToken;
 	private HashMap<Long, MyRunner> mine = new HashMap<Long, MyRunner>();
+	private AppConfig config;
+	private BetfairAuthenticator authenticator;
 
 	public BetfairFace() {
-		Properties props = new Properties();
-		// Load properties from the classpath (src/main/resources)
-		try (InputStream in = BetfairFace.class.getClassLoader().getResourceAsStream("config.properties")) {
-			if (in == null) {
-				throw new RuntimeException("Could not find config.properties on the classpath. Make sure it's in src/main/resources.");
-			}
-			props.load(in);
-			this.appid = props.getProperty("betfair.appid");
-			this.bfun = props.getProperty("betfair.username");
-			this.bfpw = props.getProperty("betfair.password");
-			this.ctpw = props.getProperty("betfair.cert.password");
-
-			if (this.appid == null || this.bfun == null || this.bfpw == null || this.ctpw == null ||
-				this.appid.isEmpty() || this.bfun.isEmpty() || this.bfpw.isEmpty() || this.ctpw.isEmpty()) {
-				throw new IllegalStateException("One or more required properties are missing from config.properties. Please check the file.");
-			}
-		} catch (IOException e) {
-			throw new RuntimeException("Could not load config.properties. Make sure the file exists in the project root and is readable.", e);
-		}
+		this.config = new ConfigLoader().load(); // Load configuration from properties file
+		this.authenticator = new BetfairAuthenticator(config);
 	}
 
-	public void betfairLogin()
-	{
-		// Reverted to DefaultHttpClient for compatibility with older JARs on the classpath
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		try {
-			SSLContext ctx = SSLContext.getInstance("TLS");
-			KeyStore keyStore = KeyStore.getInstance("pkcs12");
-			// Load keystore from the classpath (src/main/resources)
-			try (InputStream keyStoreStream = BetfairFace.class.getClassLoader().getResourceAsStream("client-2048.p12")) {
-				if (keyStoreStream == null) {
-					throw new RuntimeException("Could not find client-2048.p12 on the classpath. Make sure it's in src/main/resources.");
-				}
-				keyStore.load(keyStoreStream, ctpw.toCharArray());
-			}
-
-			KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-			kmf.init(keyStore, ctpw.toCharArray());
-			KeyManager[] keyManagers = kmf.getKeyManagers();
-			ctx.init(keyManagers, null, new SecureRandom());
-
-			// Use the deprecated SSLSocketFactory compatible with httpclient-4.2.x
-			@SuppressWarnings("deprecation")
-			SSLSocketFactory factory = new SSLSocketFactory(ctx, new StrictHostnameVerifier());
-
-			ClientConnectionManager manager = httpClient.getConnectionManager();
-			manager.getSchemeRegistry().register(new Scheme("https", 443, factory));
-
-			HttpPost httpPost = new HttpPost("https://identitysso-cert.betfair.com/api/certlogin");
-			httpPost.setHeader("X-Application", appid);
-
-			List<NameValuePair> nvps = new ArrayList<>();
-			nvps.add(new BasicNameValuePair("username", bfun));
-			nvps.add(new BasicNameValuePair("password", bfpw));
-			httpPost.setEntity(new UrlEncodedFormEntity(nvps));
-
-			HttpResponse response = httpClient.execute(httpPost);
-			HttpEntity entity = response.getEntity();
-			if (entity != null) {
-				String responseString = EntityUtils.toString(entity);
-				// Use Gson for safe and reliable JSON parsing
-				Gson gson = new Gson();
-				JsonObject jsonObject = gson.fromJson(responseString, JsonObject.class);
-				this.session = jsonObject.has("sessionToken") ? jsonObject.get("sessionToken").getAsString() : "";
-				this.status = jsonObject.has("loginStatus") ? jsonObject.get("loginStatus").getAsString() : "FAIL";
-			}
-		} catch (Exception e) {
-			System.out.println("Eception Caught : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			// Ensure the connection manager is always shut down
-			httpClient.getConnectionManager().shutdown();
-		}
+	public BetfairAuthenticator getAuthenticator() {
+		return authenticator;
 	}
 
 	public HashMap<Long, MyRunner> start(String date, String appKey, String ssoid)
@@ -277,90 +216,7 @@ public class BetfairFace
 				}
 			}
 		}
-	}
-
-	public void betfairLogout()
-	{
-		// Reverted to DefaultHttpClient for compatibility
-		DefaultHttpClient httpClient = new DefaultHttpClient();
-		try {
-			HttpPost httpPost = new HttpPost("https://identitysso.betfair.com/api/logout");
-			httpPost.setHeader("Accept", "application/json");
-			httpPost.setHeader("X-Authentication", this.session);
-			httpPost.setHeader("X-Application", this.appid);
-			HttpResponse response = httpClient.execute(httpPost);
-			HttpEntity entity = response.getEntity();
-			if (entity != null) {
-				String responseString = EntityUtils.toString(entity);
-				Gson gson = new Gson();
-				JsonObject jsonObject = gson.fromJson(responseString, JsonObject.class);
-				if (jsonObject.has("status")) {
-					this.status = jsonObject.get("status").getAsString();
-				}
-			}
-		} catch (Exception e) {
-			System.out.println("Eception Caught : " + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			// Restore the finally block to ensure the connection is always shut down
-			httpClient.getConnectionManager().shutdown();
-		}
-	}
-
-	public String getSession()
-	{
-		return session;
-	}
-
-	public void setSession(String session)
-	{
-		this.session = session;
-	}
-
-	public String getStatus()
-	{
-		return status;
-	}
-
-	public void setStatus(String status)
-	{
-		this.status = status;
-	}
-
-	public String getAppid()
-	{
-		return appid;
-	}
-	
-	/*public void postFileToServer(File textFile) {
-
-		if (textFile.length() > 500) {
-			try {
-				String boundary = Long.toHexString(System.currentTimeMillis());
-				URLConnection connection = new URL("http://pluckier-tkhorse.rhcloud.com/uploadFile").openConnection();
-				connection.setDoOutput(true);
-				connection.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
-				OutputStream output = connection.getOutputStream();
-				PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, "UTF-8"), true);
-				writer.append("--" + boundary).append("\r\n");
-				writer.append(
-						"Content-Disposition: form-data; name=\"textFile\"; filename=\"" + textFile.getName() + "\"")
-						.append("\r\n");
-				writer.append("Content-Type: text/plain; charset=" + "UTF-8").append("\r\n");
-				writer.append("\r\n").flush();
-				Files.copy(textFile.toPath(), output);
-				output.flush();
-				writer.append("\r\n").flush();
-				writer.append("--" + boundary + "--").append("\r\n").flush();
-				int responseCode = ((HttpURLConnection) connection).getResponseCode();
-				System.out.println("server response " + responseCode);
-				writer.close();
-				output.close();
-			} catch (Exception e) {
-				System.out.println("EEEEEEEEk");
-			}
-		}
-	}*/
+	}	
 
 	public File createTheFile(String nameOfFile, HashMap<Long, MyRunner> bd)
 	{

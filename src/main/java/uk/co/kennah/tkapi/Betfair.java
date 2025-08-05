@@ -1,6 +1,9 @@
 package uk.co.kennah.tkapi;
 
 import java.util.HashMap;
+
+import uk.co.kennah.tkapi.client.BetfairAuthenticator;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -9,12 +12,14 @@ public class Betfair {
 	public void odds(String date) {
 		try {
 			BetfairFace bf = new BetfairFace();
-			bf.betfairLogin();
+			BetfairAuthenticator auth = bf.getAuthenticator(); 
+			auth.login();// Use the authenticator to log in
+			//bf.betfairLogin();
 
 			// Check for successful login before proceeding
-			if ("SUCCESS".equals(bf.getStatus())) {
+			if ("SUCCESS".equals(auth.getStatus())) {
 				// Fetch market data only ONCE to avoid redundant API calls
-				HashMap<Long, MyRunner> marketData = bf.start(date, bf.getAppid(), bf.getSession());
+				HashMap<Long, MyRunner> marketData = bf.start(date, auth.getAppid(), auth.getSession());
 
 				// Create the two required files from the same data
 				String fileCalledLatest = "C:\\prj\\TK-API-NG\\" + date + "-ODDSlatest.data";
@@ -23,9 +28,9 @@ public class Betfair {
 				String fileCalled = "C:\\prj\\TK-API-NG\\" + date + "ODDS.data";
 				bf.createTheFile(fileCalled, marketData);
 
-				bf.betfairLogout();
+				auth.logout();
 			} else {
-				System.err.println("Login failed with status: " + bf.getStatus() + ". Aborting operation.");
+				System.err.println("Login failed with status: " + auth.getStatus() + ". Aborting operation.");
 			}
 		} catch (Exception e) {
 			// Improve error handling to provide meaningful debug information
