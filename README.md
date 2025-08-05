@@ -91,7 +91,7 @@ If all is good you will see the length of the file in standard out:
 
    - Length of file is: 37202 bytes
 
-A single file will be created in the odds folder in the project root with this format:
+A single file will be created in the project root folder with this format:
 
    - `YYYY-MM-DDODDS.data`
 
