@@ -40,6 +40,34 @@ mvn clean package
 
 The final JAR will be located in the `target/` directory.
 
+## Project Structure
+
+```
+TK-API-NG/
+├── lib/
+│   └── betfair-aping-nodep.jar   # Proprietary Betfair SDK
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── uk/co/kennah/tkapi/
+│   │   │       ├── Betfair.java          # Main application entry point
+│   │   │       ├── client/
+│   │   │       │   └── Authenticator.java  # Handles login/logout
+│   │   │       ├── config/
+│   │   │       │   ├── AppConfig.java      # Holds configuration data
+│   │   │       │   └── ConfigLoader.java   # Loads config.properties
+│   │   │       ├── io/
+│   │   │       │   └── OddsWriter.java     # Writes odds data to a file
+│   │   │       └── model/
+│   │   │           ├── MarketDataFetcher.java # Fetches market data from API
+│   │   │           └── MyRunner.java       # Represents a single runner (horse)
+│   │   └── resources/
+│   │       ├── client-2048.p12         # SSL certificate for authentication
+│   │       └── config.properties.template # Template for user credentials
+├── pom.xml                         # Maven project configuration
+└── README.md                       # This file
+```
+
 ## Running the Application
 
 To run the application, execute the JAR from the project root. You can optionally provide a date in `YYYY-MM-DD` format as a command-line argument. If no date is provided, the application will use the current date.
