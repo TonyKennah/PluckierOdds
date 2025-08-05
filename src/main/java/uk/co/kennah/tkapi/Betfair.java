@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 public class Betfair {
 
-	public void odds(String date) {
+	public void getOdds(String date) {
 		try {
 			MarketDataFetcher fetcher = new MarketDataFetcher();
 			Authenticator auth = fetcher.getAuthenticator();
@@ -47,7 +47,7 @@ public class Betfair {
 			// Default to today's date if no argument is provided
 			dateToUse = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE); // Formats as YYYY-MM-DD
 		}
-		new Betfair().odds(dateToUse);
+		new Betfair().getOdds(dateToUse);
 	}
 
 }
