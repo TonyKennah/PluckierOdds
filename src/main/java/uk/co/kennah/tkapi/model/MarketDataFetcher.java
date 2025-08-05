@@ -17,8 +17,11 @@ import com.betfair.aping.enums.MarketProjection;
 import com.betfair.aping.enums.MarketSort;
 import com.betfair.aping.enums.PriceData;
 import com.betfair.aping.exceptions.APINGException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,24 +60,15 @@ public class MarketDataFetcher {
 					eventTypeIds.add(eventTypeResult.getEventType().getId().toString());
 				}
 			}
-			Calendar cal = Calendar.getInstance();
-			Date now = cal.getTime();
-			cal.set(Calendar.HOUR_OF_DAY, 23);
-			Date end = cal.getTime();
-			if (!date.equals("")){
-				String[] params = date.split("-");
-				cal.set(Calendar.YEAR, Integer.parseInt(params[0]));
-				cal.set(Calendar.MONTH, Integer.parseInt(params[1]) - 1);
-				cal.set(Calendar.DAY_OF_MONTH, Integer.parseInt(params[2]));
-				cal.set(Calendar.HOUR_OF_DAY, 01);
-				now = cal.getTime();
-				cal.set(Calendar.HOUR_OF_DAY, 23);
-				end = cal.getTime();
-			}
+
+			LocalDate parsedDate = LocalDate.parse(date);
+			LocalDateTime startOfDay = parsedDate.atTime(LocalTime.of(0, 1));
+			LocalDateTime endOfDay = parsedDate.atTime(LocalTime.of(23, 59));
 
 			TimeRange time = new TimeRange();
-			time.setFrom(now);
-			time.setTo(end);
+			// Convert to java.util.Date for the Betfair SDK's TimeRange object
+			time.setFrom(Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant()));
+			time.setTo(Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant()));
 			Set<String> countries = new HashSet<String>();
 			countries.add("GB");
 			countries.add("IE");
@@ -100,9 +94,6 @@ public class MarketDataFetcher {
 				printMarketCatalogue(mc);
 			}
 
-			// *** CRITICAL BUG FIX: Correctly chunk the market catalogue list ***
-			// The old implementation repeatedly processed the same last 20 markets and discarded the rest.
-			// This new loop correctly iterates through all markets in chunks of 20.
 			final int CHUNK_SIZE = 20;
 			for (int i = 0; i < marketCatalogueResult.size(); i += CHUNK_SIZE) {
 				// Get the sublist for the current chunk
@@ -129,7 +120,7 @@ public class MarketDataFetcher {
 			}
 		}
 		catch (APINGException apiExc){
-			System.out.println("\n\n\n\n\nAPINGException!!!!!!!!!!!\n\n\n\n\n HERE WHATS CAUGHT: " + apiExc.toString());
+			System.out.println("\nAPINGException!!!!!!!!!!!\n WHATS CAUGHT: " + apiExc.toString());
 		}
 		return mine;
 	}
