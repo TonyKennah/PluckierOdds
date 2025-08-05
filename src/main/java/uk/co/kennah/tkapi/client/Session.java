@@ -30,7 +30,7 @@ public class Session {
 	private final String bfun;
 	private final String bfpw;
 	private final String appid;
-	private String session;
+	private String sessionToken;
 	private String status;
 	private final String ctpw;
 
@@ -41,20 +41,12 @@ public class Session {
 		this.bfpw = config.getPassword(); // Ensure password is loaded
 	}
 
-	public String getSession() {
-		return session;
-	}
-
-	public void setSession(String session) {
-		this.session = session;
+	public String getSessionToken() {
+		return sessionToken;
 	}
 
 	public String getStatus() {
 		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
 	}
 
 	public String getAppid() {
@@ -105,7 +97,7 @@ public class Session {
 				// Use Gson for safe and reliable JSON parsing
 				Gson gson = new Gson();
 				JsonObject jsonObject = gson.fromJson(responseString, JsonObject.class);
-				this.session = jsonObject.has("sessionToken") ? jsonObject.get("sessionToken").getAsString() : "";
+				this.sessionToken = jsonObject.has("sessionToken") ? jsonObject.get("sessionToken").getAsString() : "";
 				this.status = jsonObject.has("loginStatus") ? jsonObject.get("loginStatus").getAsString() : "FAIL";
 				System.out.println("LOGIN STATUS: " + status);
 			}
@@ -124,7 +116,7 @@ public class Session {
 		try {
 			HttpPost httpPost = new HttpPost("https://identitysso.betfair.com/api/logout");
 			httpPost.setHeader("Accept", "application/json");
-			httpPost.setHeader("X-Authentication", this.session);
+			httpPost.setHeader("X-Authentication", this.sessionToken);
 			httpPost.setHeader("X-Application", this.appid);
 			HttpResponse response = httpClient.execute(httpPost);
 			HttpEntity entity = response.getEntity();

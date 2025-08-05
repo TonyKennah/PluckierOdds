@@ -2,7 +2,7 @@ package uk.co.kennah.tkapi;
 
 import uk.co.kennah.tkapi.client.Session;
 import uk.co.kennah.tkapi.io.OddsWriter;
-import uk.co.kennah.tkapi.model.MarketDataFetcher;
+import uk.co.kennah.tkapi.model.DataFetcher;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -10,12 +10,12 @@ public class Betfair {
 
 	public void getOdds(String date) {
 		try {
-			MarketDataFetcher fetcher = new MarketDataFetcher();
+			DataFetcher fetcher = new DataFetcher();
 			Session session = fetcher.getSession();
 			session.login();// Use the authenticator to log in
 			if ("SUCCESS".equals(session.getStatus())) {
 				new OddsWriter().write(date + "-ODDS.data", 
-					fetcher.getData(date, session.getAppid(), session.getSession()));
+					fetcher.getData(date, session.getAppid(), session.getSessionToken()));
 				session.logout();
 			} else {
 				System.err.println("Login failed with status: " + session.getStatus() + ". Aborting operation.");
@@ -28,12 +28,10 @@ public class Betfair {
 
 	public static void main(String[] args) {
 		String dateToUse;
-
-		if (args.length > 0) {
+		if (args.length > 0)
 			dateToUse = args[0];
-		} else {
+		else
 			dateToUse = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE); // Formats as YYYY-MM-DD
-		}
 		new Betfair().getOdds(dateToUse);
 	}
 

@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class MarketDataFetcher {
+public class DataFetcher {
 	private ApiNgOperations jsonOperations = ApiNgJsonRpcOperations.getInstance();
 	private String applicationKey;
 	private String sessionToken;
@@ -36,7 +36,7 @@ public class MarketDataFetcher {
 	private AppConfig config;
 	private Session session;
 
-	public MarketDataFetcher() {
+	public DataFetcher() {
 		this.config = new ConfigLoader().load(); // Load configuration from properties file
 		this.session = new Session(config);
 	}
