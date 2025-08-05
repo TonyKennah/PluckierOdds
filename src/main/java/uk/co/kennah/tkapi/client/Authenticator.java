@@ -25,7 +25,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BetfairAuthenticator {
+public class Authenticator {
 
     private final String bfun;
     private final String bfpw;
@@ -34,7 +34,7 @@ public class BetfairAuthenticator {
     private String status; 
     private final String ctpw;
 
-    public BetfairAuthenticator(AppConfig config) {
+    public Authenticator(AppConfig config) {
         this.ctpw = config.getCertPassword(); // Ensure certPassword is loaded
         this.appid = config.getAppId(); // Ensure appId is loaded
         this.bfun = config.getUsername(); // Ensure username is loaded
@@ -73,7 +73,7 @@ public class BetfairAuthenticator {
 			SSLContext ctx = SSLContext.getInstance("TLS");
 			KeyStore keyStore = KeyStore.getInstance("pkcs12");
 			// Load keystore from the classpath (src/main/resources)
-			try (InputStream keyStoreStream = BetfairAuthenticator.class.getClassLoader().getResourceAsStream("client-2048.p12")) {
+			try (InputStream keyStoreStream = Authenticator.class.getClassLoader().getResourceAsStream("client-2048.p12")) {
 				if (keyStoreStream == null) {
 					throw new RuntimeException("Could not find client-2048.p12 on the classpath. Make sure it's in src/main/resources.");
 				}

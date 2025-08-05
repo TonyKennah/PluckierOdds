@@ -2,7 +2,7 @@ package uk.co.kennah.tkapi;
 
 import java.util.HashMap;
 
-import uk.co.kennah.tkapi.client.BetfairAuthenticator;
+import uk.co.kennah.tkapi.client.Authenticator;
 import uk.co.kennah.tkapi.io.OddsWriter;
 import uk.co.kennah.tkapi.model.MarketDataFetcher;
 import uk.co.kennah.tkapi.model.MyRunner;
@@ -15,7 +15,7 @@ public class Betfair {
 	public void odds(String date) {
 		try {
 			MarketDataFetcher fetcher = new MarketDataFetcher();
-			BetfairAuthenticator auth = fetcher.getAuthenticator();
+			Authenticator auth = fetcher.getAuthenticator();
 			auth.login();// Use the authenticator to log in
 
 			// Check for successful login before proceeding
