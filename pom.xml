@@ -6,7 +6,7 @@
 
     <groupId>uk.co.kennah.tkapi</groupId>
     <artifactId>tk-api-ng</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -24,6 +24,7 @@
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <maven-shade-plugin.version>3.2.4</maven-shade-plugin.version>
+        <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
     </properties>
 
     <dependencies>
@@ -73,25 +74,28 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
             </plugin>
-            <!-- Use the Shade plugin to create a fat JAR that includes all dependencies -->
+            <!-- Use the Assembly plugin to create a fat JAR that includes all dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>${maven-shade-plugin.version}</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin.version}</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>single</goal>
                         </goals>
                         <configuration>
-                            <!-- This prevents the creation of dependency-reduced-pom.xml -->
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <!-- This prevents '-jar-with-dependencies' from being added to the filename -->
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <archive>
+                                <manifest>
                                     <mainClass>uk.co.kennah.tkapi.Betfair</mainClass>
-                                </transformer>
-                            </transformers>
+                                </manifest>
+                            </archive>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
                         </configuration>
                     </execution>
                 </executions>
