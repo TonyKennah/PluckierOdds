@@ -46,7 +46,7 @@ To run the application, execute the JAR from the project root.
 
 
 ```bash
-java --add-opens java.base/java.lang=com.google.gson -jar target/tk-api-ng-1.0-SNAPSHOT-jar-with-dependencies.jar
+java --add-opens java.base/java.lang=ALL-UNNAMED -jar target/tk-api-ng-1.0-SNAPSHOT.jar
 ```
 
 **Note on `--add-opens`:** This flag is required when running on Java 9 or newer. It allows the Gson library (a dependency) to function correctly with Java's module system.
