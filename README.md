@@ -62,9 +62,9 @@ TK-API-NG/
 │   │   │       │   └── ConfigLoader.java   # Loads config.properties
 │   │   │       ├── io/
 │   │   │       │   └── Writer.java         # Writes odds data to a file
-│   │   │       └── model/
+│   │   │       ├── model/
 │   │   │       │   ├── AppConfig.java      # Holds configuration data
-│   │   │           └── MyRunner.java       # Represents a single runner (horse)
+│   │   │       │   └── MyRunner.java       # Represents a single runner (horse)
 │   │   │       └── process/
 │   │   │           └── DataFetcher.java    # Fetches market data from API
 │   │   └── resources/
