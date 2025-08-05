@@ -1,8 +1,9 @@
 package uk.co.kennah.tkapi;
 
 import uk.co.kennah.tkapi.client.Session;
-import uk.co.kennah.tkapi.io.OddsWriter;
-import uk.co.kennah.tkapi.model.DataFetcher;
+import uk.co.kennah.tkapi.io.Writer;
+import uk.co.kennah.tkapi.process.DataFetcher;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -14,7 +15,7 @@ public class Betfair {
 			Session session = fetcher.getSession();
 			session.login();// Use the authenticator to log in
 			if ("SUCCESS".equals(session.getStatus())) {
-				new OddsWriter().write(date + "-ODDS.data", 
+				new Writer().publish(date + "-ODDS.data", 
 					fetcher.getData(date, session.getAppid(), session.getSessionToken()));
 				session.logout();
 			} else {

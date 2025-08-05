@@ -1,8 +1,10 @@
-package uk.co.kennah.tkapi.model;
+package uk.co.kennah.tkapi.process;
 
 import uk.co.kennah.tkapi.client.Session;
-import uk.co.kennah.tkapi.config.AppConfig;
 import uk.co.kennah.tkapi.config.ConfigLoader;
+import uk.co.kennah.tkapi.model.AppConfig;
+import uk.co.kennah.tkapi.model.MyRunner;
+
 import com.betfair.aping.api.ApiNgJsonRpcOperations;
 import com.betfair.aping.api.ApiNgOperations;
 import com.betfair.aping.entities.EventTypeResult;

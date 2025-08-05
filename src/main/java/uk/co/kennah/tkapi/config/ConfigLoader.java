@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import uk.co.kennah.tkapi.model.AppConfig;
+
 public class ConfigLoader {
 
     public AppConfig load() {

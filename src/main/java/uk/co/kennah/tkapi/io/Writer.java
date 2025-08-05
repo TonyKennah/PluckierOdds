@@ -9,9 +9,9 @@ import java.util.HashMap;
 
 import uk.co.kennah.tkapi.model.MyRunner;
 
-public class OddsWriter {
+public class Writer {
 
-    public void write(String filePath, HashMap<Long, MyRunner> data) throws IOException {
+    public void publish(String filePath, HashMap<Long, MyRunner> data) throws IOException {
         // First, check if the data is substantial enough to write.
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);

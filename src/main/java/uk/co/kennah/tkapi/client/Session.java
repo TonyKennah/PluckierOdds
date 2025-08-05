@@ -2,6 +2,9 @@ package uk.co.kennah.tkapi.client;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import uk.co.kennah.tkapi.model.AppConfig;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -14,7 +17,6 @@ import org.apache.http.conn.ssl.StrictHostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import uk.co.kennah.tkapi.config.AppConfig;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;

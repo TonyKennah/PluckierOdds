@@ -1,4 +1,4 @@
-package uk.co.kennah.tkapi.config;
+package uk.co.kennah.tkapi.model;
 
 public class AppConfig {
     private final String appId;
