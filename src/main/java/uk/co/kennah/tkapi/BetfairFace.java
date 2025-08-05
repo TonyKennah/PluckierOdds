@@ -15,8 +15,6 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import java.io.Serializable;
-
 import com.betfair.aping.api.ApiNgJsonRpcOperations;
 import com.betfair.aping.api.ApiNgOperations;
 import com.betfair.aping.entities.EventTypeResult;
@@ -29,8 +27,6 @@ import com.betfair.aping.entities.RunnerCatalog;
 import com.betfair.aping.entities.TimeRange;
 import com.betfair.aping.enums.MarketProjection;
 import com.betfair.aping.enums.MarketSort;
-import com.betfair.aping.enums.MatchProjection;
-import com.betfair.aping.enums.OrderProjection;
 import com.betfair.aping.enums.PriceData;
 import com.betfair.aping.exceptions.APINGException;
 
@@ -42,18 +38,10 @@ import java.io.InputStream;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.Files;
 import java.security.KeyStore;
 import java.security.SecureRandom;
 import java.util.ArrayList;
