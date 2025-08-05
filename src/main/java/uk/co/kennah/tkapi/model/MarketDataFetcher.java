@@ -1,6 +1,6 @@
 package uk.co.kennah.tkapi.model;
 
-import uk.co.kennah.tkapi.client.Authenticator;
+import uk.co.kennah.tkapi.client.Session;
 import uk.co.kennah.tkapi.config.AppConfig;
 import uk.co.kennah.tkapi.config.ConfigLoader;
 import com.betfair.aping.api.ApiNgJsonRpcOperations;
@@ -34,15 +34,15 @@ public class MarketDataFetcher {
 	private String sessionToken;
 	private HashMap<Long, MyRunner> mine = new HashMap<Long, MyRunner>();
 	private AppConfig config;
-	private Authenticator authenticator;
+	private Session session;
 
 	public MarketDataFetcher() {
 		this.config = new ConfigLoader().load(); // Load configuration from properties file
-		this.authenticator = new Authenticator(config);
+		this.session = new Session(config);
 	}
 
-	public Authenticator getAuthenticator() {
-		return authenticator;
+	public Session getSession() {
+		return session;
 	}
 
 	public HashMap<Long, MyRunner> getData(String date, String appKey, String ssoid){

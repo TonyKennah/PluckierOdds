@@ -25,7 +25,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Authenticator {
+public class Session {
 
 	private final String bfun;
 	private final String bfpw;
@@ -34,7 +34,7 @@ public class Authenticator {
 	private String status;
 	private final String ctpw;
 
-	public Authenticator(AppConfig config) {
+	public Session(AppConfig config) {
 		this.ctpw = config.getCertPassword(); // Ensure certPassword is loaded
 		this.appid = config.getAppId(); // Ensure appId is loaded
 		this.bfun = config.getUsername(); // Ensure username is loaded
@@ -69,7 +69,7 @@ public class Authenticator {
 			SSLContext ctx = SSLContext.getInstance("TLS");
 			KeyStore keyStore = KeyStore.getInstance("pkcs12");
 			// Load keystore from the classpath (src/main/resources)
-			try (InputStream keyStoreStream = Authenticator.class.getClassLoader()
+			try (InputStream keyStoreStream = Session.class.getClassLoader()
 					.getResourceAsStream("client-2048.p12")) {
 				if (keyStoreStream == null) {
 					throw new RuntimeException(

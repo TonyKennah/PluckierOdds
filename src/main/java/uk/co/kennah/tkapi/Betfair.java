@@ -1,6 +1,6 @@
 package uk.co.kennah.tkapi;
 
-import uk.co.kennah.tkapi.client.Authenticator;
+import uk.co.kennah.tkapi.client.Session;
 import uk.co.kennah.tkapi.io.OddsWriter;
 import uk.co.kennah.tkapi.model.MarketDataFetcher;
 import java.time.LocalDate;
@@ -11,14 +11,14 @@ public class Betfair {
 	public void getOdds(String date) {
 		try {
 			MarketDataFetcher fetcher = new MarketDataFetcher();
-			Authenticator auth = fetcher.getAuthenticator();
-			auth.login();// Use the authenticator to log in
-			if ("SUCCESS".equals(auth.getStatus())) {
+			Session session = fetcher.getSession();
+			session.login();// Use the authenticator to log in
+			if ("SUCCESS".equals(session.getStatus())) {
 				new OddsWriter().write(date + "-ODDS.data", 
-					fetcher.getData(date, auth.getAppid(), auth.getSession()));
-				auth.logout();
+					fetcher.getData(date, session.getAppid(), session.getSession()));
+				session.logout();
 			} else {
-				System.err.println("Login failed with status: " + auth.getStatus() + ". Aborting operation.");
+				System.err.println("Login failed with status: " + session.getStatus() + ". Aborting operation.");
 			}
 		} catch (Exception e) {
 			System.err.println("An unexpected error occurred in the main process:");
