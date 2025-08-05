@@ -27,55 +27,53 @@ import java.util.List;
 
 public class Authenticator {
 
-    private final String bfun;
-    private final String bfpw;
-    private final String appid;
-    private String session;
-    private String status; 
-    private final String ctpw;
+	private final String bfun;
+	private final String bfpw;
+	private final String appid;
+	private String session;
+	private String status;
+	private final String ctpw;
 
-    public Authenticator(AppConfig config) {
-        this.ctpw = config.getCertPassword(); // Ensure certPassword is loaded
-        this.appid = config.getAppId(); // Ensure appId is loaded
-        this.bfun = config.getUsername(); // Ensure username is loaded
-        this.bfpw = config.getPassword(); // Ensure password is loaded
-    }
+	public Authenticator(AppConfig config) {
+		this.ctpw = config.getCertPassword(); // Ensure certPassword is loaded
+		this.appid = config.getAppId(); // Ensure appId is loaded
+		this.bfun = config.getUsername(); // Ensure username is loaded
+		this.bfpw = config.getPassword(); // Ensure password is loaded
+	}
 
-    public String getSession()
-	{
+	public String getSession() {
 		return session;
 	}
 
-	public void setSession(String session)
-	{
+	public void setSession(String session) {
 		this.session = session;
 	}
 
-	public String getStatus()
-	{
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status)
-	{
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
-	public String getAppid()
-	{
+	public String getAppid() {
 		return appid;
 	}
 
-    public void login() {
-		// Reverted to DefaultHttpClient for compatibility with older JARs on the classpath
+	public void login() {
+		// Reverted to DefaultHttpClient for compatibility with older JARs on the
+		// classpath
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		try {
 			SSLContext ctx = SSLContext.getInstance("TLS");
 			KeyStore keyStore = KeyStore.getInstance("pkcs12");
 			// Load keystore from the classpath (src/main/resources)
-			try (InputStream keyStoreStream = Authenticator.class.getClassLoader().getResourceAsStream("client-2048.p12")) {
+			try (InputStream keyStoreStream = Authenticator.class.getClassLoader()
+					.getResourceAsStream("client-2048.p12")) {
 				if (keyStoreStream == null) {
-					throw new RuntimeException("Could not find client-2048.p12 on the classpath. Make sure it's in src/main/resources.");
+					throw new RuntimeException(
+							"Could not find client-2048.p12 on the classpath. Make sure it's in src/main/resources.");
 				}
 				keyStore.load(keyStoreStream, ctpw.toCharArray());
 			}
@@ -109,8 +107,8 @@ public class Authenticator {
 				JsonObject jsonObject = gson.fromJson(responseString, JsonObject.class);
 				this.session = jsonObject.has("sessionToken") ? jsonObject.get("sessionToken").getAsString() : "";
 				this.status = jsonObject.has("loginStatus") ? jsonObject.get("loginStatus").getAsString() : "FAIL";
-                System.out.println("LOGIN STATUS: " + status);
-            }
+				System.out.println("LOGIN STATUS: " + status);
+			}
 		} catch (Exception e) {
 			System.out.println("Eception Caught : " + e.getMessage());
 			e.printStackTrace();
@@ -120,8 +118,7 @@ public class Authenticator {
 		}
 	}
 
-    public void logout()
-	{
+	public void logout() {
 		// Reverted to DefaultHttpClient for compatibility
 		DefaultHttpClient httpClient = new DefaultHttpClient();
 		try {
@@ -137,7 +134,7 @@ public class Authenticator {
 				JsonObject jsonObject = gson.fromJson(responseString, JsonObject.class);
 				if (jsonObject.has("status")) {
 					this.status = jsonObject.get("status").getAsString();
-                    System.out.println("LOGOUT STATUS: " + status);
+					System.out.println("LOGOUT STATUS: " + status);
 				}
 			}
 		} catch (Exception e) {
