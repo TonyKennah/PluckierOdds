@@ -1,4 +1,4 @@
-package uk.co.kennah.tkapi;
+package uk.co.kennah.tkapi.model;
 
 import java.io.Serializable;
 

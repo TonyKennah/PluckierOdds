@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import uk.co.kennah.tkapi.client.BetfairAuthenticator;
 import uk.co.kennah.tkapi.io.OddsWriter;
+import uk.co.kennah.tkapi.model.MarketDataFetcher;
+import uk.co.kennah.tkapi.model.MyRunner;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

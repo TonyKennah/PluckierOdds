@@ -1,7 +1,5 @@
 package uk.co.kennah.tkapi.io;
 
-import uk.co.kennah.tkapi.MyRunner;
-
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -9,6 +7,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.HashMap;
+
+import uk.co.kennah.tkapi.model.MyRunner;
 
 public class OddsWriter {
 

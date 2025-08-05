@@ -1,4 +1,4 @@
-package uk.co.kennah.tkapi;
+package uk.co.kennah.tkapi.model;
 
 import uk.co.kennah.tkapi.client.BetfairAuthenticator;
 import uk.co.kennah.tkapi.config.AppConfig;
@@ -25,7 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class BetfairFace{
+public class MarketDataFetcher {
 	private ApiNgOperations jsonOperations = ApiNgJsonRpcOperations.getInstance();
 	private String applicationKey;
 	private String sessionToken;
@@ -33,7 +33,7 @@ public class BetfairFace{
 	private AppConfig config;
 	private BetfairAuthenticator authenticator;
 
-	public BetfairFace() {
+	public MarketDataFetcher() {
 		this.config = new ConfigLoader().load(); // Load configuration from properties file
 		this.authenticator = new BetfairAuthenticator(config);
 	}
