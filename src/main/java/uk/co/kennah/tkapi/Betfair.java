@@ -21,10 +21,6 @@ public class Betfair {
 				// Fetch market data only ONCE to avoid redundant API calls
 				HashMap<Long, MyRunner> marketData = bf.start(date, auth.getAppid(), auth.getSession());
 
-				// Create the two required files from the same data
-				String fileCalledLatest = "C:\\prj\\TK-API-NG\\" + date + "-ODDSlatest.data";
-				bf.createTheFile(fileCalledLatest, marketData);
-
 				String fileCalled = "C:\\prj\\TK-API-NG\\" + date + "ODDS.data";
 				bf.createTheFile(fileCalled, marketData);
 
