@@ -30,11 +30,13 @@
             <version>2.9.0</version>
         </dependency>
 
-        <!-- Betfair API SDK - Now treated as a standard dependency after being installed locally -->
+        <!-- Betfair API SDK - Using system scope to include from the /lib folder -->
         <dependency>
             <groupId>com.betfair.aping</groupId>
             <artifactId>betfair-aping-sdk</artifactId>
             <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/betfair-aping-nodep.jar</systemPath>
         </dependency>
 
         <!-- Example for JUnit 5 for testing -->
@@ -64,20 +66,11 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.2</version>
             </plugin>
+            <!-- Use the Shade plugin to create a fat JAR that includes system-scoped dependencies -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>uk.co.kennah.tkapi.Betfair</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
@@ -90,4 +83,10 @@
             </plugin>
         </plugins>
     </build>
-</project>
+</project>                            <goal>shade</goal>                <configuration>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>uk.co.kennah.tkapi.Betfair</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
