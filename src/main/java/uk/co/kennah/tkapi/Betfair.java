@@ -12,15 +12,14 @@ public class Betfair {
 
 	public void odds(String date) {
 		try {
-			BetfairFace bf = new BetfairFace();
-			BetfairAuthenticator auth = bf.getAuthenticator(); 
+			MarketDataFetcher fetcher = new MarketDataFetcher();
+			BetfairAuthenticator auth = fetcher.getAuthenticator();
 			auth.login();// Use the authenticator to log in
-			//bf.betfairLogin();
 
 			// Check for successful login before proceeding
 			if ("SUCCESS".equals(auth.getStatus())) {
 				// Fetch market data only ONCE to avoid redundant API calls
-				HashMap<Long, MyRunner> marketData = bf.start(date, auth.getAppid(), auth.getSession());
+				HashMap<Long, MyRunner> marketData = fetcher.start(date, auth.getAppid(), auth.getSession());
 
 				// Use the new OddsWriter to handle file creation
 				new OddsWriter().write(date + "ODDS.data", marketData);
