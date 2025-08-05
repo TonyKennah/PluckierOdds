@@ -58,12 +58,12 @@ If all is good you will see the length of the files in standard out
    - Length of file is: 37202 bytes
    - Length of file is: 37202 bytes
 
-and two file will be created in the project root folder:
+and two identical files will be created in the project root folder:
 
    - yyyy.mm.dd.ODDS.data
    - yyyy-mm-dd.ODDSlatest.data
 
-   These files will contain a list of hoorse names with current odds (seperated by a #):
+   These files will contain horses from numerous markets that were specified in the code "GB", "IE", "ZA", "FR", "AE", and "US".  The names listed with current odds from the win only market (seperated by a #):
 
         Emilys Choice#11.5
         Montauk Memoirs#2.08
