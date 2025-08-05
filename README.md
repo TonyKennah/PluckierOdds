@@ -57,14 +57,14 @@ TK-API-NG/
 │   │   │   └── uk/co/kennah/tkapi/
 │   │   │       ├── Betfair.java          # Main application entry point
 │   │   │       ├── client/
-│   │   │       │   └── Authenticator.java  # Handles login/logout
+│   │   │       │   └── Session.java        # Handles login/logout and session management
 │   │   │       ├── config/
 │   │   │       │   ├── AppConfig.java      # Holds configuration data
 │   │   │       │   └── ConfigLoader.java   # Loads config.properties
 │   │   │       ├── io/
 │   │   │       │   └── OddsWriter.java     # Writes odds data to a file
 │   │   │       └── model/
-│   │   │           ├── MarketDataFetcher.java # Fetches market data from API
+│   │   │           ├── DataFetcher.java    # Fetches market data from API
 │   │   │           └── MyRunner.java       # Represents a single runner (horse)
 │   │   └── resources/
 │   │       ├── client-2048.p12         # SSL certificate for authentication
@@ -93,7 +93,7 @@ If all is good you will see the length of the file in standard out:
 
 A single file will be created in the project root folder with this format:
 
-   - `YYYY-MM-DDODDS.data`
+   - `YYYY-MM-DD-ODDS.data`
 
    This file will contain horses from numerous markets that were specified in the code ("GB", "IE", "ZA", "FR", "AE", and "US"). The names are listed with the current odds from the win-only market, separated by a `#`:
 
