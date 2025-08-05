@@ -1,6 +1,8 @@
 package uk.co.kennah.tkapi;
 
 import java.util.HashMap;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Betfair {
 
@@ -33,7 +35,17 @@ public class Betfair {
 	}
 
 	public static void main(String[] args) {
-		new Betfair().odds("2025-08-05");
+		String dateToUse;
+
+		if (args.length > 0) {
+			// A date is provided as a command-line argument
+			// You might want to add validation here to ensure it's in YYYY-MM-DD format
+			dateToUse = args[0];
+		} else {
+			// Default to today's date if no argument is provided
+			dateToUse = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE); // Formats as YYYY-MM-DD
+		}
+		new Betfair().odds(dateToUse);
 	}
 
 }
