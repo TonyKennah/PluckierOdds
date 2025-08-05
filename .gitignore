@@ -7,6 +7,9 @@ config.properties
 # Private key file for authentication
 /src/main/resources/client-2048.p12
 
+# serena
+.serena/
+
 # Maven build output
 /target/
 
