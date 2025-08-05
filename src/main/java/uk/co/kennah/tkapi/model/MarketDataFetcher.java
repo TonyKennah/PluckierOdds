@@ -75,7 +75,7 @@ public class MarketDataFetcher {
 			countries.add("ZA");
 			countries.add("FR");
 			countries.add("AE");
-			countries.add("US");
+			//countries.add("US");
 			// countries.add("HKG");
 			Set<String> typesCode = new HashSet<String>();
 			typesCode.add("WIN");
