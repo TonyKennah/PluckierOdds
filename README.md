@@ -54,17 +54,15 @@ java --add-opens java.base/java.lang=ALL-UNNAMED -jar target/tk-api-ng-1.0.jar Y
 
 ## Application Output
 
-If all is good you will see the length of the files in standard out
+If all is good you will see the length of the file in standard out:
 
    - Length of file is: 37202 bytes
-   - Length of file is: 37202 bytes
 
-and two identical files will be created in the project root folder:
+A single file will be created in the project root folder with the following name format:
 
-   - yyyy.mm.dd.ODDS.data
-   - yyyy-mm-dd.ODDSlatest.data
+   - `YYYY-MM-DDODDS.data`
 
-   These files will contain horses from numerous markets that were specified in the code "GB", "IE", "ZA", "FR", "AE", and "US".  The names listed with current odds from the win only market (seperated by a #):
+   This file will contain horses from numerous markets that were specified in the code ("GB", "IE", "ZA", "FR", "AE", and "US"). The names are listed with the current odds from the win-only market, separated by a `#`:
 
         Emilys Choice#11.5
         Montauk Memoirs#2.08

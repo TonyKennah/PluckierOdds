@@ -17,13 +17,6 @@ import com.betfair.aping.enums.MarketProjection;
 import com.betfair.aping.enums.MarketSort;
 import com.betfair.aping.enums.PriceData;
 import com.betfair.aping.exceptions.APINGException;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -167,48 +160,5 @@ public class BetfairFace{
 				}
 			}
 		}
-	}	
-
-	public File createTheFile(String nameOfFile, HashMap<Long, MyRunner> bd){
-		File file = new File(nameOfFile);
-		try{
-			if (!file.exists()){
-				file.createNewFile();
-			}
-			FileWriter fw = new FileWriter(file.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-
-			// test
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(bd);
-			int length = baos.toByteArray().length;
-			System.out.println("Length of file is: " + length + " bytes");
-
-			if (length > 500 && bd instanceof HashMap){
-				for (Long keys : bd.keySet()){
-					Double odd = 0.0;
-					if (mine.get(keys).getOdds() != null){
-						odd = mine.get(keys).getOdds();
-					}
-					bw.write(mine.get(keys).getName() + "#" + odd + "\n");
-				}
-				bw.close();
-				// System.out.println("-----CREATED----");
-			}
-			else{
-				System.out.println("The odds are foooked");
-			}
-			fw.close();
-		}
-		catch (FileNotFoundException fnfe){
-			fnfe.printStackTrace();
-			System.out.println("Exception " + fnfe);
-		}
-		catch (IOException ioe){
-			ioe.printStackTrace();
-			System.out.println("Exception " + ioe);
-		}
-		return file;
 	}
 }

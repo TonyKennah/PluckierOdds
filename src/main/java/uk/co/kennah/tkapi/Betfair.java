@@ -3,6 +3,7 @@ package uk.co.kennah.tkapi;
 import java.util.HashMap;
 
 import uk.co.kennah.tkapi.client.BetfairAuthenticator;
+import uk.co.kennah.tkapi.io.OddsWriter;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -21,9 +22,8 @@ public class Betfair {
 				// Fetch market data only ONCE to avoid redundant API calls
 				HashMap<Long, MyRunner> marketData = bf.start(date, auth.getAppid(), auth.getSession());
 
-				String fileCalled = "C:\\prj\\TK-API-NG\\" + date + "ODDS.data";
-				bf.createTheFile(fileCalled, marketData);
-
+				// Use the new OddsWriter to handle file creation
+				new OddsWriter().write(date + "ODDS.data", marketData);
 				auth.logout();
 			} else {
 				System.err.println("Login failed with status: " + auth.getStatus() + ". Aborting operation.");
