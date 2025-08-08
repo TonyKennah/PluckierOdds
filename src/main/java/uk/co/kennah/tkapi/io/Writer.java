@@ -19,7 +19,7 @@ public class Writer {
         int length = baos.toByteArray().length;
         System.out.println("Length of file is: " + length + " bytes");
 
-        if (length <= 500) {
+        if (length <= 10) {
             System.out.println("The odds data is too small or invalid, not writing file.");
             return;
         }

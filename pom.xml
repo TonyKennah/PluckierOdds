@@ -29,12 +29,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>com.betfair.aping</groupId>
-            <artifactId>betfair-aping-sdk</artifactId>
-            <version>1.0</version>
-        </dependency>
-
         <!-- For making HTTP requests -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -48,6 +42,7 @@
             <artifactId>gson</artifactId>
             <version>${gson.version}</version>
         </dependency>
+
 
         <!-- Betfair API SDK - NOTE: This JAR must be manually installed into the local .m2 repository. -->
         <dependency>
