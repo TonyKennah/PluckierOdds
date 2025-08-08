@@ -12,11 +12,11 @@ A Java application for fetching odds data from the Betfair API.
 
 ## Setup
 
-This project depends on a proprietary Betfair SDK which is not available in public Maven repositories. You must install it into your local Maven repository before you can build the project.
+This project depends on a [proprietary Betfair SDK](https://github.com/betfair/API-NG-sample-code/tree/master/java/ng) which is not available in public Maven repositories. You must install it into your local Maven repository before you can build the project.
 
 ### 1. Install the Local Dependency
 
-The required JAR file, `betfair-aping-nodep.jar`, is included in the `/lib` directory of this project.
+The required JAR file, `betfair-aping-nodep.jar`, is included in the `/lib` directory of this project or [build it yourself](https://github.com/betfair/API-NG-sample-code/tree/master/java/ng).
 
 From the root directory of the project, run the following command to install the JAR into your local Maven repository:
 ```bash
@@ -25,7 +25,7 @@ mvn install:install-file -Dfile=lib/betfair-aping-nodep.jar -DgroupId=com.betfai
 
 ### 2. Configure Credentials
 
-The application requires your Betfair credentials and a client security certificate to be configured.
+The application requires your Betfair [credentials](https://developer.betfair.com/get-started/) and a client security certificate to be configured.
 
 +Credentials File:
 
