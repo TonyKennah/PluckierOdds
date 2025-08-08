@@ -9,6 +9,9 @@ A Java application for fetching odds data from the Betfair API.
 
 *   Java Development Kit (JDK) 8 or higher.
 *   Apache Maven.
+*   A Betfair login.
+*   A Betfair appId.
+*   Self-signed certificate.
 
 ## Setup
 
