@@ -31,7 +31,7 @@ jobs:
       # This command installs a JAR from your project into the local Maven repository for this build run.
       # This makes it available as a standard dependency.
       # TODO: Update the path and details for your specific JAR file.
-      run: mvn org.apache.maven.plugins:maven-install-plugin:3.1.1:install-file -Dfile=${{ github.workspace }}/lib/your-dependency.jar -DgroupId=com.betfair.aping -DartifactId=betfair-aping-sdk -Dversion=1.0 -Dpackaging=jar
+      run: mvn org.apache.maven.plugins:maven-install-plugin:3.1.1:install-file -Dfile=${{ github.workspace }}/lib/betfair=aping-nodep.jar -DgroupId=com.betfair.aping -DartifactId=betfair-aping-sdk -Dversion=1.0 -Dpackaging=jar
     - name: Build and Test with Maven
       # The 'verify' phase will compile, test, and package the project.
       # It will use both the locally installed JAR and regular dependencies from the Maven cache.
