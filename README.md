@@ -27,14 +27,14 @@ mvn install:install-file -Dfile=lib/betfair-aping-nodep.jar -DgroupId=com.betfai
 
 The application requires your Betfair [credentials](https://developer.betfair.com/get-started/) and a client security [certificate](https://betfair-developer-docs.atlassian.net/wiki/spaces/1smk3cen4v3lu3yomq5qye0ni/pages/2687915/Non-Interactive+bot+login) to be configured.
 
-+Credentials File:
+- Credentials File:
 
 1.  Navigate to `src/main/resources/`.
 2.  Make a copy of `config.properties.template` and rename it to `config.properties`.
 3.  Fill in your details in the new `config.properties` file.
 
 
-+Security Certificate: 
+- Security Certificate: 
 
 1. Obtain the `client-2048.p12` security certificate file from [Betfair](https://betfair-developer-docs.atlassian.net/wiki/spaces/1smk3cen4v3lu3yomq5qye0ni/pages/2687915/Non-Interactive+bot+login).
 2. Place this file in the `src/main/resources/` directory.
