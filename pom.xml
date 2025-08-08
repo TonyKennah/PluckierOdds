@@ -28,6 +28,13 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.betfair.aping</groupId>
+            <artifactId>betfair-aping-sdk</artifactId>
+            <version>1.0</version>
+        </dependency>
+
         <!-- For making HTTP requests -->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
