@@ -16,7 +16,7 @@ public class Betfair {
 			session.login();// Use the authenticator to log in
 			if ("SUCCESS".equals(session.getStatus())) {
 				new Writer().publish(date + "-ODDS.data", 
-					fetcher.getData(date, session.getAppid(), session.getSessionToken()));
+					fetcher.getData(date));
 				session.logout();
 			} else {
 				System.err.println("Login failed with status: " + session.getStatus() + ". Aborting operation.");

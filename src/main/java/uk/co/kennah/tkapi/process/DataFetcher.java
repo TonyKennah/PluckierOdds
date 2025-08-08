@@ -32,124 +32,130 @@ import java.util.Set;
 
 public class DataFetcher {
 	private ApiNgOperations jsonOperations = ApiNgJsonRpcOperations.getInstance();
-	private String applicationKey;
-	private String sessionToken;
-	private HashMap<Long, MyRunner> mine = new HashMap<Long, MyRunner>();
+	private HashMap<Long, MyRunner> outputData = new HashMap<Long, MyRunner>();
 	private AppConfig config;
 	private Session session;
 
 	public DataFetcher() {
 		this.config = new ConfigLoader().load(); // Load configuration from properties file
 		this.session = new Session(config);
+		
 	}
 
 	public Session getSession() {
 		return session;
 	}
 
-	public HashMap<Long, MyRunner> getData(String date, String appKey, String ssoid){
-		this.applicationKey = appKey;
-		this.sessionToken = ssoid;
-		try
-		{
-			MarketFilter marketFilter;
-			marketFilter = new MarketFilter();
-			Set<String> eventTypeIds = new HashSet<String>();
-			List<EventTypeResult> r = jsonOperations.listEventTypes(marketFilter, applicationKey, sessionToken);
+	public HashMap<Long, MyRunner> getData(String date) {
+		return getAllData(date);
+	}
 
-			for (EventTypeResult eventTypeResult : r){
-				if (eventTypeResult.getEventType().getName().equals("Horse Racing")){
-					eventTypeIds.add(eventTypeResult.getEventType().getId().toString());
-				}
+	private HashMap<Long, MyRunner> getAllData(String date) {
+		try {
+
+			//This catalogue contains Markets, seledctionIds, names for each horse
+			List<MarketCatalogue> catalogue = getMarketCatalogue(date);
+			for (MarketCatalogue mc : catalogue) {
+				System.out.println("\nMARKET CATALOGUE: "+mc.toString()+"\n");
+				addHorsesNamestoOutputData(mc);
 			}
 
-			LocalDate parsedDate = LocalDate.parse(date);
-			LocalDateTime startOfDay = parsedDate.atTime(LocalTime.of(0, 1));
-			LocalDateTime endOfDay = parsedDate.atTime(LocalTime.of(23, 59));
-
-			TimeRange time = new TimeRange();
-			// Convert to java.util.Date for the Betfair SDK's TimeRange object
-			time.setFrom(Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant()));
-			time.setTo(Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant()));
-			Set<String> countries = new HashSet<String>();
-			countries.add("GB");
-			countries.add("IE");
-			countries.add("ZA");
-			countries.add("FR");
-			countries.add("AE");
-			//countries.add("US");
-			// countries.add("HKG");
-			Set<String> typesCode = new HashSet<String>();
-			typesCode.add("WIN");
-			marketFilter = new MarketFilter();
-			marketFilter.setEventTypeIds(eventTypeIds);
-			marketFilter.setMarketStartTime(time);
-			marketFilter.setMarketCountries(countries);
-			marketFilter.setMarketTypeCodes(typesCode);
-			marketFilter.setInPlayOnly(false);
-			Set<MarketProjection> marketProjection = new HashSet<MarketProjection>();
-			marketProjection.add(MarketProjection.EVENT);
-			marketProjection.add(MarketProjection.RUNNER_DESCRIPTION);
-			String maxResults = "1000";
-			List<MarketCatalogue> marketCatalogueResult = jsonOperations.listMarketCatalogue(marketFilter, marketProjection, MarketSort.FIRST_TO_START, maxResults, applicationKey, sessionToken);
-			for (MarketCatalogue mc : marketCatalogueResult){
-				printMarketCatalogue(mc);
+			//This marketBook contains the odds for each seledctionId
+			List<MarketBook> book = getMarketBook(catalogue);
+			for (MarketBook mb : book) {
+				System.out.println("MARKET BOOK: "+mb.getRunners().size() + " runners");
+				addHorsesOddstoOutputData(mb);
 			}
 
-			final int CHUNK_SIZE = 20;
-			for (int i = 0; i < marketCatalogueResult.size(); i += CHUNK_SIZE) {
-				// Get the sublist for the current chunk
-				List<MarketCatalogue> chunk = marketCatalogueResult.subList(i, Math.min(i + CHUNK_SIZE, marketCatalogueResult.size()));
-
-				// Extract market IDs from the current chunk
-				List<String> marketIds = new ArrayList<>();
-				for (MarketCatalogue mc : chunk) {
-					marketIds.add(mc.getMarketId());
-				}
-
-				if (marketIds.isEmpty()) {
-					continue;
-				}
-
-				PriceProjection priceProjection = new PriceProjection();
-				Set<PriceData> priceData = new HashSet<PriceData>();
-				priceData.add(PriceData.EX_BEST_OFFERS);
-				priceProjection.setPriceData(priceData);
-				List<MarketBook> marketBookReturn = jsonOperations.listMarketBook(marketIds, priceProjection, null, null, null, applicationKey, sessionToken);
-				for (MarketBook mb : marketBookReturn){
-					printBookCatalogue(mb);
-				}
-			}
-		}
-		catch (APINGException apiExc){
+		} catch (APINGException apiExc) {
 			System.out.println("\nAPINGException!!!!!!!!!!!\n WHATS CAUGHT: " + apiExc.toString());
 		}
-		return mine;
+		return outputData;
 	}
-	
-	private void printMarketCatalogue(MarketCatalogue mk){
+
+	private List<MarketBook> getMarketBook(List<MarketCatalogue> catalogue) throws APINGException {		
+		// Extract market IDs from the current chunk
+		List<String> marketIds = new ArrayList<>();
+		for (MarketCatalogue mc : catalogue) {
+			marketIds.add(mc.getMarketId());
+		}
+
+		PriceProjection priceProjection = new PriceProjection();
+		Set<PriceData> priceData = new HashSet<PriceData>();
+		priceData.add(PriceData.EX_BEST_OFFERS);
+		priceProjection.setPriceData(priceData);
+		List<MarketBook> marketBookReturn = jsonOperations.listMarketBook(marketIds, priceProjection, null, null, null,
+				session.getAppid(), session.getSessionToken());
+		return marketBookReturn;
+
+	}
+
+	private List<MarketCatalogue> getMarketCatalogue(String date) throws APINGException {
+		MarketFilter marketFilter;
+		marketFilter = new MarketFilter();
+		Set<String> eventTypeIds = new HashSet<String>();
+		List<EventTypeResult> r = jsonOperations.listEventTypes(marketFilter, session.getAppid(), session.getSessionToken());
+
+		for (EventTypeResult eventTypeResult : r) {
+			if (eventTypeResult.getEventType().getName().equals("Horse Racing")) {
+				eventTypeIds.add(eventTypeResult.getEventType().getId().toString());
+			}
+		}
+
+		LocalDate parsedDate = LocalDate.parse(date);
+		LocalDateTime startOfDay = parsedDate.atTime(LocalTime.of(0, 1));
+		LocalDateTime endOfDay = parsedDate.atTime(LocalTime.of(23, 59));
+
+		TimeRange time = new TimeRange();
+		// Convert to java.util.Date for the Betfair SDK's TimeRange object
+		time.setFrom(Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant()));
+		time.setTo(Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant()));
+		Set<String> countries = new HashSet<String>();
+		countries.add("GB");
+		countries.add("IE");
+		countries.add("ZA");
+		countries.add("FR");
+		countries.add("AE");
+		// countries.add("US");
+		// countries.add("HKG");
+		Set<String> typesCode = new HashSet<String>();
+		typesCode.add("WIN");
+		marketFilter = new MarketFilter();
+		marketFilter.setEventTypeIds(eventTypeIds);
+		marketFilter.setMarketStartTime(time);
+		marketFilter.setMarketCountries(countries);
+		marketFilter.setMarketTypeCodes(typesCode);
+		marketFilter.setInPlayOnly(false);
+		Set<MarketProjection> marketProjection = new HashSet<MarketProjection>();
+		marketProjection.add(MarketProjection.EVENT);
+		marketProjection.add(MarketProjection.RUNNER_DESCRIPTION);
+		String maxResults = "1000";
+		List<MarketCatalogue> marketCatalogueResult = jsonOperations.listMarketCatalogue(marketFilter, marketProjection,
+				MarketSort.FIRST_TO_START, maxResults, session.getAppid(), session.getSessionToken());
+		return marketCatalogueResult;
+
+	}
+
+	private void addHorsesNamestoOutputData(MarketCatalogue mk) {
 		List<RunnerCatalog> runners = mk.getRunners();
-		if (runners != null){
-			for (RunnerCatalog rCat : runners){
-				//System.out.println(rCat.getRunnerName());
+		if (runners != null) {
+			for (RunnerCatalog rCat : runners) {
+				System.out.println(rCat.getRunnerName());
 				String name = rCat.getRunnerName();
-				if (Character.isDigit(rCat.getRunnerName().charAt(1))){
-					name = rCat.getRunnerName().substring(4, rCat.getRunnerName().length());
+				if (name == null || name.isEmpty()) {
+					name = "UKNOWN RUNNER NAME";
 				}
-				else if (Character.isDigit(rCat.getRunnerName().charAt(0))){
-					name = rCat.getRunnerName().substring(3, rCat.getRunnerName().length());
-				}
-				mine.put(rCat.getSelectionId(), new MyRunner(name));
+				outputData.put(rCat.getSelectionId(), new MyRunner(name));
 			}
 		}
 	}
 
-	private void printBookCatalogue(MarketBook mb){
+	private void addHorsesOddstoOutputData(MarketBook mb) {
 		List<Runner> runners = mb.getRunners();
-		if (runners != null){
-			for (Runner rCat : runners){
-				if (rCat.getEx().getAvailableToBack().size() > 0){
-					mine.get(rCat.getSelectionId()).setOdds(rCat.getEx().getAvailableToBack().get(0).getPrice());
+		if (runners != null) {
+			for (Runner rCat : runners) {
+				if (rCat.getEx().getAvailableToBack().size() > 0) {
+					outputData.get(rCat.getSelectionId()).setOdds(rCat.getEx().getAvailableToBack().get(0).getPrice());
 				}
 			}
 		}
