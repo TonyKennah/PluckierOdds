@@ -34,7 +34,7 @@ The application requires your Betfair credentials and a client security certific
 3.  Fill in your details in the new `config.properties` file.
 
 
-+Security Certificate: +1. Obtain the `client-2048.p12` security certificate file from Betfair. +2. Place this file in the `src/main/resources/` directory.
++Security Certificate: +1. Obtain the `client-2048.p12` security certificate file from [Betfair](https://betfair-developer-docs.atlassian.net/wiki/spaces/1smk3cen4v3lu3yomq5qye0ni/pages/2687915/Non-Interactive+bot+login). +2. Place this file in the `src/main/resources/` directory.
 
 *Note: Both `config.properties` and `client-2048.p12` are included in `.gitignore` to prevent you from accidentally committing your secrets.*
 
