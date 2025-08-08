@@ -31,19 +31,14 @@ import java.util.List;
 import java.util.Set;
 
 public class DataFetcher {
-	private ApiNgOperations jsonOperations = ApiNgJsonRpcOperations.getInstance();
-	private HashMap<Long, MyRunner> outputData = new HashMap<Long, MyRunner>();
-	private AppConfig config;
+	private ApiNgOperations jsonOperations;
+	private HashMap<Long, MyRunner> outputData;
 	private Session session;
 
 	public DataFetcher() {
-		this.config = new ConfigLoader().load(); // Load configuration from properties file
-		this.session = new Session(config);
-		
-	}
-
-	public Session getSession() {
-		return session;
+		this.jsonOperations = ApiNgJsonRpcOperations.getInstance();
+		this.outputData = new HashMap<Long, MyRunner>();
+		this.session = new Session(new ConfigLoader().load());
 	}
 
 	public HashMap<Long, MyRunner> getData(String date) {
@@ -52,20 +47,13 @@ public class DataFetcher {
 
 	private HashMap<Long, MyRunner> getAllData(String date) {
 		try {
-
 			//This catalogue contains Markets, seledctionIds, names for each horse
 			List<MarketCatalogue> catalogue = getMarketCatalogue(date);
-			for (MarketCatalogue mc : catalogue) {
-				System.out.println("\nMARKET CATALOGUE: "+mc.toString()+"\n");
-				addHorsesNamestoOutputData(mc);
-			}
+			catalogue.forEach(entry -> addHorsesNamestoOutputData(entry));
 
 			//This marketBook contains the odds for each seledctionId
 			List<MarketBook> book = getMarketBook(catalogue);
-			for (MarketBook mb : book) {
-				System.out.println("MARKET BOOK: "+mb.getRunners().size() + " runners");
-				addHorsesOddstoOutputData(mb);
-			}
+			book.forEach(entry -> addHorsesOddstoOutputData(entry));
 
 		} catch (APINGException apiExc) {
 			System.out.println("\nAPINGException!!!!!!!!!!!\n WHATS CAUGHT: " + apiExc.toString());
@@ -74,90 +62,50 @@ public class DataFetcher {
 	}
 
 	private List<MarketBook> getMarketBook(List<MarketCatalogue> catalogue) throws APINGException {		
-		// Extract market IDs from the current chunk
 		List<String> marketIds = new ArrayList<>();
-		for (MarketCatalogue mc : catalogue) {
-			marketIds.add(mc.getMarketId());
-		}
-
+		catalogue
+			.forEach(mk -> marketIds.add(mk.getMarketId()));
 		PriceProjection priceProjection = new PriceProjection();
-		Set<PriceData> priceData = new HashSet<PriceData>();
-		priceData.add(PriceData.EX_BEST_OFFERS);
+		Set<PriceData> priceData = new HashSet<PriceData>(List.of(PriceData.EX_BEST_OFFERS));
 		priceProjection.setPriceData(priceData);
-		List<MarketBook> marketBookReturn = jsonOperations.listMarketBook(marketIds, priceProjection, null, null, null,
-				session.getAppid(), session.getSessionToken());
-		return marketBookReturn;
-
+		return jsonOperations.listMarketBook(marketIds, priceProjection, null, null, null, session.getAppid(), session.getSessionToken());
 	}
 
 	private List<MarketCatalogue> getMarketCatalogue(String date) throws APINGException {
-		MarketFilter marketFilter;
-		marketFilter = new MarketFilter();
+		List<EventTypeResult> eventTypes = jsonOperations.listEventTypes(new MarketFilter(), session.getAppid(), session.getSessionToken());
 		Set<String> eventTypeIds = new HashSet<String>();
-		List<EventTypeResult> r = jsonOperations.listEventTypes(marketFilter, session.getAppid(), session.getSessionToken());
-
-		for (EventTypeResult eventTypeResult : r) {
-			if (eventTypeResult.getEventType().getName().equals("Horse Racing")) {
-				eventTypeIds.add(eventTypeResult.getEventType().getId().toString());
-			}
-		}
-
+		eventTypes.stream()
+			.filter(type -> type.getEventType().getName().equals("Horse Racing"))
+			.forEach(type -> eventTypeIds.add(type.getEventType().getId().toString()));
 		LocalDate parsedDate = LocalDate.parse(date);
 		LocalDateTime startOfDay = parsedDate.atTime(LocalTime.of(0, 1));
 		LocalDateTime endOfDay = parsedDate.atTime(LocalTime.of(23, 59));
-
 		TimeRange time = new TimeRange();
 		// Convert to java.util.Date for the Betfair SDK's TimeRange object
 		time.setFrom(Date.from(startOfDay.atZone(ZoneId.systemDefault()).toInstant()));
 		time.setTo(Date.from(endOfDay.atZone(ZoneId.systemDefault()).toInstant()));
-		Set<String> countries = new HashSet<String>();
-		countries.add("GB");
-		countries.add("IE");
-		countries.add("ZA");
-		countries.add("FR");
-		countries.add("AE");
-		// countries.add("US");
-		// countries.add("HKG");
-		Set<String> typesCode = new HashSet<String>();
-		typesCode.add("WIN");
-		marketFilter = new MarketFilter();
+		MarketFilter marketFilter = new MarketFilter();
 		marketFilter.setEventTypeIds(eventTypeIds);
 		marketFilter.setMarketStartTime(time);
-		marketFilter.setMarketCountries(countries);
-		marketFilter.setMarketTypeCodes(typesCode);
+		marketFilter.setMarketCountries(new HashSet<String>(List.of("GB","IE","FR","ZA","AE")));
+		marketFilter.setMarketTypeCodes(new HashSet<String>(List.of("WIN")));
 		marketFilter.setInPlayOnly(false);
-		Set<MarketProjection> marketProjection = new HashSet<MarketProjection>();
-		marketProjection.add(MarketProjection.EVENT);
-		marketProjection.add(MarketProjection.RUNNER_DESCRIPTION);
-		String maxResults = "1000";
-		List<MarketCatalogue> marketCatalogueResult = jsonOperations.listMarketCatalogue(marketFilter, marketProjection,
-				MarketSort.FIRST_TO_START, maxResults, session.getAppid(), session.getSessionToken());
-		return marketCatalogueResult;
-
+		Set<MarketProjection> marketProjection = new HashSet<MarketProjection>(List.of(MarketProjection.EVENT, MarketProjection.RUNNER_DESCRIPTION));
+		return jsonOperations.listMarketCatalogue(marketFilter, marketProjection, MarketSort.FIRST_TO_START, "1000", session.getAppid(), session.getSessionToken());
 	}
 
 	private void addHorsesNamestoOutputData(MarketCatalogue mk) {
-		List<RunnerCatalog> runners = mk.getRunners();
-		if (runners != null) {
-			for (RunnerCatalog rCat : runners) {
-				System.out.println(rCat.getRunnerName());
-				String name = rCat.getRunnerName();
-				if (name == null || name.isEmpty()) {
-					name = "UKNOWN RUNNER NAME";
-				}
-				outputData.put(rCat.getSelectionId(), new MyRunner(name));
-			}
-		}
+		mk.getRunners()
+			.forEach(horse ->outputData.put(horse.getSelectionId(), new MyRunner(horse.getRunnerName())));
 	}
 
 	private void addHorsesOddstoOutputData(MarketBook mb) {
-		List<Runner> runners = mb.getRunners();
-		if (runners != null) {
-			for (Runner rCat : runners) {
-				if (rCat.getEx().getAvailableToBack().size() > 0) {
-					outputData.get(rCat.getSelectionId()).setOdds(rCat.getEx().getAvailableToBack().get(0).getPrice());
-				}
-			}
-		}
+		mb.getRunners().stream()
+			.filter(horse -> horse.getEx().getAvailableToBack().size() > 0)
+			.forEach(horse -> outputData.get(horse.getSelectionId()).setOdds(horse.getEx().getAvailableToBack().get(0).getPrice()));
+	}
+
+	public Session getSession() {
+		return session;
 	}
 }
