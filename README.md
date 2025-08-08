@@ -1,4 +1,7 @@
-# TK-API-NG
+[![Build & Test Status](https://github.com/TonyKennah/PluckierOdds/actions/workflows/maven.yml/badge.svg)](https://github.com/TonyKennah/PluckierOdds/actions/workflows/maven.yml)
+
+
+# PluckierOdds
 
 A Java application for fetching odds data from the Betfair API.
 
