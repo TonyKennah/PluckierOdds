@@ -9,8 +9,21 @@ import java.util.HashMap;
 
 import uk.co.kennah.tkapi.model.MyRunner;
 
+/**
+ * Handles writing processed horse racing data to a file.
+ * This class provides functionality to persist the collected runner data
+ * into a specified file in a simple, delimited format.
+ */
 public class Writer {
 
+    /**
+     * Writes the runner data to a file at the specified path.
+     * The data is formatted as "event#name#odds" for each runner.
+     * It performs a check to ensure the data is not empty or trivial before writing.
+     * @param filePath The absolute or relative path of the file to write to.
+     * @param data A map containing the runner data, with selection ID as the key.
+     * @throws IOException if an I/O error occurs while writing to the file.
+     */
     public void publish(String filePath, HashMap<Long, MyRunner> data) throws IOException {
         // First, check if the data is substantial enough to write.
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

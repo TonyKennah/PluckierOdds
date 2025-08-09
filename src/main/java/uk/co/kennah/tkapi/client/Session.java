@@ -27,6 +27,12 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Manages the user's session with the Betfair API.
+ * This class handles the authentication process, including logging in with a
+ * client certificate to obtain a session token, and logging out to terminate
+ * the session. It holds the session state, such as the session token and status.
+ */
 public class Session {
 
 	private final String bfun;
@@ -36,25 +42,50 @@ public class Session {
 	private String status;
 	private final String ctpw;
 
+	/**
+	 * Constructs a new Session object with the necessary configuration.
+	 *
+	 * @param config The application configuration containing credentials and keys.
+	 */
 	public Session(AppConfig config) {
-		this.ctpw = config.getCertPassword(); // Ensure certPassword is loaded
-		this.appid = config.getAppId(); // Ensure appId is loaded
-		this.bfun = config.getUsername(); // Ensure username is loaded
-		this.bfpw = config.getPassword(); // Ensure password is loaded
+		this.ctpw = config.certPassword(); // Ensure certPassword is loaded
+		this.appid = config.appId(); // Ensure appId is loaded
+		this.bfun = config.username(); // Ensure username is loaded
+		this.bfpw = config.password(); // Ensure password is loaded
 	}
-
+	/**
+	 * Gets the session token obtained after a successful login.
+	 *
+	 * @return The session token string.
+	 */
 	public String getSessionToken() {
 		return sessionToken;
 	}
 
+	/**
+	 * Gets the current status of the session (e.g., "SUCCESS", "FAIL").
+	 *
+	 * @return The session status string.
+	 */
 	public String getStatus() {
 		return status;
 	}
 
+	/**
+	 * Gets the application ID used for API requests.
+	 *
+	 * @return The application ID string.
+	 */
 	public String getAppid() {
 		return appid;
 	}
 
+	/**
+	 * Logs into the Betfair API using the provided certificate and credentials.
+	 * It establishes an SSL context with the client certificate, sends a POST
+	 * request to the certlogin endpoint, and parses the response to store the
+	 * session token and login status.
+	 */
 	public void login() {
 		// Reverted to DefaultHttpClient for compatibility with older JARs on the
 		// classpath
@@ -111,6 +142,11 @@ public class Session {
 		}
 	}
 
+	/**
+	 * Logs out from the Betfair API.
+	 * This invalidates the current session token by sending a request to the
+	 * logout endpoint.
+	 */
 	public void logout() {
 		// Reverted to DefaultHttpClient for compatibility
 		DefaultHttpClient httpClient = new DefaultHttpClient();

@@ -6,8 +6,20 @@ import java.util.Properties;
 
 import uk.co.kennah.tkapi.model.AppConfig;
 
+/**
+ * Loads application configuration from a properties file.
+ * This class is responsible for reading the `config.properties` file from the
+ * classpath, extracting necessary properties like API credentials, and creating
+ * an {@link AppConfig} object.
+ */
 public class ConfigLoader {
 
+    /**
+     * Loads the configuration from the `config.properties` file.
+     * @return An {@link AppConfig} object populated with the properties.
+     * @throws RuntimeException if the properties file cannot be found or loaded.
+     * @throws IllegalStateException if any required properties are missing or empty.
+     */
     public AppConfig load() {
         Properties props = new Properties();
         try (InputStream in = ConfigLoader.class.getClassLoader().getResourceAsStream("config.properties")) {
