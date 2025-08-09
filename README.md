@@ -9,14 +9,17 @@ A Java application for fetching odds data from the Betfair API.
 
 *   Java Development Kit (JDK) 8 or higher.
 *   Apache Maven.
+*   A Betfair login.
+*   A Betfair appId.
+*   Self-signed certificate.
 
 ## Setup
 
-This project depends on a proprietary Betfair SDK which is not available in public Maven repositories. You must install it into your local Maven repository before you can build the project.
+This project depends on a [proprietary Betfair SDK](https://github.com/betfair/API-NG-sample-code/tree/master/java/ng) which is not available in public Maven repositories. You must install it into your local Maven repository before you can build the project.
 
 ### 1. Install the Local Dependency
 
-The required JAR file, `betfair-aping-nodep.jar`, is included in the `/lib` directory of this project.
+The required JAR file, `betfair-aping-nodep.jar`, is included in the `/lib` directory of this project or [build it yourself](https://github.com/betfair/API-NG-sample-code/tree/master/java/ng).
 
 From the root directory of the project, run the following command to install the JAR into your local Maven repository:
 ```bash
@@ -25,16 +28,19 @@ mvn install:install-file -Dfile=lib/betfair-aping-nodep.jar -DgroupId=com.betfai
 
 ### 2. Configure Credentials
 
-The application requires your Betfair credentials and a client security certificate to be configured.
+The application requires your Betfair [credentials](https://developer.betfair.com/get-started/) and a client security [certificate](https://betfair-developer-docs.atlassian.net/wiki/spaces/1smk3cen4v3lu3yomq5qye0ni/pages/2687915/Non-Interactive+bot+login) to be configured.
 
-+Credentials File:
+- Credentials File:
 
 1.  Navigate to `src/main/resources/`.
 2.  Make a copy of `config.properties.template` and rename it to `config.properties`.
 3.  Fill in your details in the new `config.properties` file.
 
 
-+Security Certificate: +1. Obtain the `client-2048.p12` security certificate file from Betfair. +2. Place this file in the `src/main/resources/` directory.
+- Security Certificate: 
+
+1. Create a self-signed security certificate and upload public key file to [Betfair](https://betfair-developer-docs.atlassian.net/wiki/spaces/1smk3cen4v3lu3yomq5qye0ni/pages/2687915/Non-Interactive+bot+login).  The private key file you keep safe!
+2. Place `client-2048.p12` (private key) file in the `src/main/resources/` directory.
 
 *Note: Both `config.properties` and `client-2048.p12` are included in `.gitignore` to prevent you from accidentally committing your secrets.*
 
