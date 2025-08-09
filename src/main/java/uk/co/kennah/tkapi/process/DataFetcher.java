@@ -102,14 +102,14 @@ public class DataFetcher {
 		marketFilter.setMarketTypeCodes(new HashSet<String>(List.of("WIN")));
 		marketFilter.setInPlayOnly(false);
 		Set<MarketProjection> marketProjection = new HashSet<MarketProjection>(
-				List.of(MarketProjection.EVENT, MarketProjection.RUNNER_DESCRIPTION));
+				List.of(MarketProjection.EVENT, MarketProjection.RUNNER_DESCRIPTION, MarketProjection.MARKET_START_TIME));
 		return jsonOperations.listMarketCatalogue(marketFilter, marketProjection, MarketSort.FIRST_TO_START, "1000",
 				session.getAppid(), session.getSessionToken());
 	}
 
 	private void addHorsesNamestoOutputData(MarketCatalogue mk) {
 		mk.getRunners()
-				.forEach(horse -> outputData.put(horse.getSelectionId(), new MyRunner(horse.getRunnerName(), null, mk.getEvent().getName() + " ^^^ " + mk.toString())));
+				.forEach(horse -> outputData.put(horse.getSelectionId(), new MyRunner(horse.getRunnerName(), null, mk.getEvent().getName() + " - " + mk.toString())));
 	}
 
 	private void addHorsesOddstoOutputData(MarketBook mb) {
