@@ -109,7 +109,7 @@ public class DataFetcher {
 
 	private void addHorsesNamestoOutputData(MarketCatalogue mk) {
 		mk.getRunners()
-				.forEach(horse -> outputData.put(horse.getSelectionId(), new MyRunner(horse.getRunnerName())));
+				.forEach(horse -> outputData.put(horse.getSelectionId(), new MyRunner(horse.getRunnerName(), null, mk.getEvent().getName() + " ^^^ " + mk.toString())));
 	}
 
 	private void addHorsesOddstoOutputData(MarketBook mb) {
