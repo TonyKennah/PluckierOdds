@@ -48,10 +48,10 @@ public class Session {
 	 * @param config The application configuration containing credentials and keys.
 	 */
 	public Session(AppConfig config) {
-		this.ctpw = config.certPassword(); // Ensure certPassword is loaded
-		this.appid = config.appId(); // Ensure appId is loaded
-		this.bfun = config.username(); // Ensure username is loaded
-		this.bfpw = config.password(); // Ensure password is loaded
+		this.ctpw = config.getCertPassword(); // Ensure certPassword is loaded
+		this.appid = config.getAppId(); // Ensure appId is loaded
+		this.bfun = config.getUsername(); // Ensure username is loaded
+		this.bfpw = config.getPassword(); // Ensure password is loaded
 	}
 	/**
 	 * Gets the session token obtained after a successful login.
