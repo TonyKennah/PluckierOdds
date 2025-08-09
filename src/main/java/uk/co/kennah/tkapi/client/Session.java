@@ -101,7 +101,6 @@ public class Session {
 				JsonObject jsonObject = gson.fromJson(responseString, JsonObject.class);
 				this.sessionToken = jsonObject.has("sessionToken") ? jsonObject.get("sessionToken").getAsString() : "";
 				this.status = jsonObject.has("loginStatus") ? jsonObject.get("loginStatus").getAsString() : "FAIL";
-				System.out.println("LOGIN STATUS: " + status);
 			}
 		} catch (Exception e) {
 			System.out.println("Eception Caught : " + e.getMessage());
@@ -128,7 +127,6 @@ public class Session {
 				JsonObject jsonObject = gson.fromJson(responseString, JsonObject.class);
 				if (jsonObject.has("status")) {
 					this.status = jsonObject.get("status").getAsString();
-					System.out.println("LOGOUT STATUS: " + status);
 				}
 			}
 		} catch (Exception e) {

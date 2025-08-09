@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -109,9 +110,10 @@ public class DataFetcher {
 	}
 
 	private void addHorsesNamestoOutputData(MarketCatalogue mk) {
-		//System.out.println("USING "+ mk.getDescription().getMarketTime() + " " +mk.getEvent().getVenue() + " " + mk.toString());
+		Date retDate = mk.getDescription().getMarketTime();
+		String niceDate = retDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
 		mk.getRunners()
-				.forEach(horse -> outputData.put(horse.getSelectionId(), new MyRunner(horse.getRunnerName(), null, mk.getDescription().getMarketTime() + " " +mk.getEvent().getVenue() + " " + mk.toString())));
+				.forEach(horse -> outputData.put(horse.getSelectionId(), new MyRunner(horse.getRunnerName(), null, niceDate + " " +mk.getEvent().getVenue() + " " + mk.toString())));
 	}
 
 	private void addHorsesOddstoOutputData(MarketBook mb) {

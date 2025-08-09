@@ -17,8 +17,7 @@ public class Writer {
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(data);
         int length = baos.toByteArray().length;
-        System.out.println("Length of file is: " + length + " bytes");
-
+        
         if (length <= 10) {
             System.out.println("The odds data is too small or invalid, not writing file.");
             return;
@@ -27,7 +26,8 @@ public class Writer {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
             for (MyRunner runner : data.values()) {
                 Double odd = runner.getOdds() != null ? runner.getOdds() : 0.0;
-                bw.write(runner.getName() + "#" + odd + "\n");
+                String event = runner.getEvent();
+                bw.write(event + "#" + runner.getName() + "#" + odd + "\n");
             }
         }
     }
