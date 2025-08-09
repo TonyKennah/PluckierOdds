@@ -48,6 +48,7 @@ public class DataFetcher {
 	private HashMap<Long, MyRunner> getAllData(String date) {
 		try {
 			// This catalogue contains Markets, seledctionIds, names for each horse
+			
 			List<MarketCatalogue> catalogue = getMarketCatalogue(date);
 			catalogue.forEach(entry -> addHorsesNamestoOutputData(entry));
 
@@ -102,14 +103,15 @@ public class DataFetcher {
 		marketFilter.setMarketTypeCodes(new HashSet<String>(List.of("WIN")));
 		marketFilter.setInPlayOnly(false);
 		Set<MarketProjection> marketProjection = new HashSet<MarketProjection>(
-				List.of(MarketProjection.EVENT, MarketProjection.RUNNER_DESCRIPTION, MarketProjection.MARKET_START_TIME));
+				List.of(MarketProjection.EVENT, MarketProjection.RUNNER_DESCRIPTION, MarketProjection.MARKET_DESCRIPTION, MarketProjection.MARKET_START_TIME));
 		return jsonOperations.listMarketCatalogue(marketFilter, marketProjection, MarketSort.FIRST_TO_START, "1000",
 				session.getAppid(), session.getSessionToken());
 	}
 
 	private void addHorsesNamestoOutputData(MarketCatalogue mk) {
+		//System.out.println("USING "+ mk.getDescription().getMarketTime() + " " +mk.getEvent().getVenue() + " " + mk.toString());
 		mk.getRunners()
-				.forEach(horse -> outputData.put(horse.getSelectionId(), new MyRunner(horse.getRunnerName(), null, mk.getEvent().getName() + " - " + mk.toString())));
+				.forEach(horse -> outputData.put(horse.getSelectionId(), new MyRunner(horse.getRunnerName(), null, mk.getDescription().getMarketTime() + " " +mk.getEvent().getVenue() + " " + mk.toString())));
 	}
 
 	private void addHorsesOddstoOutputData(MarketBook mb) {
